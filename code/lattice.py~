@@ -1,0 +1,120 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+class sistema():
+    def __init__(self):
+        self.a = 1.
+        self.n = 14.
+        self.epsilon = 1.
+        self.sigma = 1.
+
+    def potenziale(self,d):
+        return 4.*self.epsilon*(pow(self.sigma/d,12)-pow(self.sigma/d,6))
+
+    def distanza(self,x,y,z):
+        d = (x**2 + y**2 + z**2)**0.5
+        if d < self.a*1.1:
+            self.closen += 1
+        return d
+
+    def latticesc(self):
+        self.closen = 0.
+        self.energia = self.sccell0()
+        for i in np.linspace(-self.n, self.n, 2.*self.n+1):
+            for j in np.linspace(-self.n, self.n, 2.*self.n+1):
+                for k in np.linspace(-self.n, self.n, 2.*self.n+1):
+                    if all(np.array([i,j,k])==np.array([0.,0.,0.])):
+                        c = 1
+                    else:
+                        self.energia += self.sccell(self.a*i,self.a*j,self.a*k)
+
+    def latticefcc(self):
+        self.closen = 0.
+        self.energia = self.fcccell0()
+        for i in np.linspace(-self.n, self.n, 2.*self.n+1):
+            for j in np.linspace(-self.n, self.n, 2.*self.n+1):
+                for k in np.linspace(-self.n, self.n, 2.*self.n+1):
+                    if all(np.array([i,j,k])==np.array([0.,0.,0.])):
+                        c = 1
+                    else:
+                        self.energia += self.fcccell(self.a*i,self.a*j,self.a*k)
+
+    def latticebcc(self):
+        self.closen = 0.
+        self.energia = self.bcccell0()
+        for i in np.linspace(-self.n, self.n, 2.*self.n+1):
+            for j in np.linspace(-self.n, self.n, 2.*self.n+1):
+                for k in np.linspace(-self.n, self.n, 2.*self.n+1):
+                    if all(np.array([i,j,k])==np.array([0.,0.,0.])):
+                        c = 1
+                    else:
+                        self.energia += self.bcccell(self.a*i,self.a*j,self.a*k)
+
+    def latticehcp(self):
+        self.closen = 0.
+        self.energia = self.hcpcell0()
+        for i in np.linspace(-self.n, self.n, 2.*self.n+1.):
+            for j in np.linspace(-self.n, self.n, 2.*self.n+1.):
+                for k in np.linspace(-self.n, self.n, 2.*self.n+1.):
+                    if all(np.array([i,j,k])==np.array([0.,0.,0.])):
+                        c = 1
+                    else:
+                        self.energia += self.hcpcell(self.a*i,self.a*j,self.a*k)
+
+    def sccell(self,x,y,z):
+        return self.potenziale(self.distanza(x,y,z))
+
+    def fcccell(self,x,y,z):
+        return self.potenziale(self.distanza(x,y,z)) + self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z)) + self.potenziale(self.distanza(x+self.a/2.,y,z+self.a/2.)) + self.potenziale(self.distanza(x,y+self.a/2.,z+self.a/2.))
+
+    def bcccell(self,x,y,z):
+        return self.potenziale(self.distanza(x,y,z)) + self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z+self.a/2.))
+
+    def hcpcell(self,x,y,z):
+        return self.potenziale(self.distanza(x+(y+z)/2.,(y+z/3.)/2.*(3.**0.5),6.**0.5*z/3.))
+
+
+    def sccell0(self):
+        return 0.
+
+    def fcccell0(self):
+        return self.potenziale(self.distanza(self.a/2.,self.a/2.,0.)) + self.potenziale(self.distanza(self.a/2.,0.,self.a/2.)) + self.potenziale(self.distanza(0.,self.a/2.,self.a/2.))
+
+    def bcccell0(self):
+        return self.potenziale(self.distanza(self.a/2.,self.a/2.,self.a/2.))
+
+    def hcpcell0(self):
+        return 0.
+
+    def fcccellc(self,x,y,z):
+        return self.potenziale(self.distanza(x,y,z)) + (self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z)) + self.potenziale(self.distanza(x+self.a/2.,y,z+self.a/2.)) + self.potenziale(self.distanza(x,y+self.a/2.,z+self.a/2.)))
+
+    def bcccellc(self,x,y,z):
+        return self.potenziale(self.distanza(x,y,z)) + self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z+self.a/2.))
+
+
+a = sistema()
+esc = []
+efcc = []
+ebcc = []
+ehcp = []
+x = np.linspace(1.082,1.098,20)
+for d in x:
+    print d
+    a.a = d
+    #a.latticesc()
+    #esc.append(a.energia)
+    #a.latticefcc()
+    #efcc.append(a.energia)
+    #a.latticebcc()
+    #ebcc.append(a.energia)
+    a.latticehcp()
+    ehcp.append(a.energia)
+#plt.plot(x,esc)
+#plt.plot(x,efcc)
+#print sum(efcc)/len(efcc)
+#plt.plot(x,ebcc)
+print sum(ehcp)/len(ehcp)
+plt.plot(x,ehcp)
+plt.grid()
+plt.show()
