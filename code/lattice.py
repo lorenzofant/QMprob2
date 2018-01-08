@@ -69,9 +69,6 @@ class sistema():
     def fcccell(self,x,y,z):
         return self.potenziale(self.distanza(x+(y+z)/(2.)+self.noise*np.random.normal(),y/(2.)+self.noise*np.random.normal(),z/(2.)+self.noise*np.random.normal()))
 
-    #def fcccell(self,x,y,z):
-    #    return self.potenziale(self.distanza(x+self.noise*np.random.normal(),y+self.noise*np.random.normal(),z+self.noise*np.random.normal())) + self.potenziale(self.distanza(x+self.a/2.+self.noise*np.random.normal(),y+self.a/2.+self.noise*np.random.normal(),z+self.noise*np.random.normal())) + self.potenziale(self.distanza(x+self.a/2.+self.noise*np.random.normal(),y+self.noise*np.random.normal(),z+self.a/2.+self.noise*np.random.normal())) + self.potenziale(self.distanza(x+self.noise*np.random.normal(),y+self.a/2.+self.noise*np.random.normal(),z+self.a/2.+self.noise*np.random.normal()))
-
     def bcccell(self,x,y,z):
         return self.potenziale(self.distanza(x,y,z)) + self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z+self.a/2.))
 
@@ -85,20 +82,12 @@ class sistema():
     def fcccell0(self):
         return 0.
 
-    #def fcccell0(self):
-    #    return self.potenziale(self.distanza(self.a/2.+self.noise*np.random.normal(),self.a/2.+self.noise*np.random.normal(),0.+self.noise*np.random.normal())) + self.potenziale(self.distanza(self.a/2.+self.noise*np.random.normal(),0.+self.noise*np.random.normal(),self.a/2.+self.noise*np.random.normal())) + self.potenziale(self.distanza(0.+self.noise*np.random.normal(),self.a/2.+self.noise*np.random.normal(),self.a/2.+self.noise*np.random.normal()))
 
     def bcccell0(self):
         return self.potenziale(self.distanza(self.a/2.,self.a/2.,self.a/2.))
 
     def hcpcell0(self):
         return 0.
-
-    def fcccellc(self,x,y,z):
-        return self.potenziale(self.distanza(x,y,z)) + (self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z)) + self.potenziale(self.distanza(x+self.a/2.,y,z+self.a/2.)) + self.potenziale(self.distanza(x,y+self.a/2.,z+self.a/2.)))
-
-    def bcccellc(self,x,y,z):
-        return self.potenziale(self.distanza(x,y,z)) + self.potenziale(self.distanza(x+self.a/2.,y+self.a/2.,z+self.a/2.))
 
 
 a = sistema()
