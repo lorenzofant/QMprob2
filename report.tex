@@ -22,7 +22,7 @@
 
 
 \section{A. Solid Argon With LJ Potential}
-p
+
 \subsection{Lattice Parameters}
 From the general expression of the Lennard-Jones potential
 \begin{equation}
@@ -39,25 +39,36 @@ V(r_0) = -\epsilon
 From these two expressions we can deduce $\sigma = \frac{3.758}{2^{\frac{1}{6}}}$\AA and $\epsilon = 99.55 cm^{-1}$
 \subsection{Crystal Structures}
 Knowing the expression for the Lennard-Jones potential we can derive an approximate value of the energy of different lattice structures by numerically summing the potential energy contributions of the neighbours.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=9cm]{energy_lattice_spacing.png}
+    \caption{\it \label{en(spacing)}Energy of the atoms in the lattice as a function of the lattice spacing for four possible lattices: Simple Cubic (Blue), Face Centered (Green), Body Centered (Red), hexagonal Cenered (Light blue)}
+    \end{figure}
+    
 Doing so for the $14^3$ closest neighbours we found the following values for the required structures
 \begin{eqnarray*}
 &spacing&energy\\
-sc&1.066&-11.36\\
-bcc&1.069&-16.45\\
-fcc&1.090&-17.2141\\
-hcp&1.090&-17.2156
+sc&1.066\sigma&-11.36\epsilon\\
+bcc&1.069\sigma&-16.45\epsilon\\
+fcc&1.090\sigma&-17.2160\epsilon\\
+hcp&1.090\sigma&-17.2192\epsilon
 \end{eqnarray*}
 We thus found that the energetically favorable configuration is the $hcp$ one by a factor of $0.01\%$ with respect to the $fcc$.
 This is in agreement with re results found in the litterature ref{crystal}. 
 In the same reference it is also pointed out that despite $hcp$ configuration being lower in energy, the one that more easily appears in nature is the $fcc$ one.
 We here try to justify such a result without considering, as done in ref{crystal}, impurities.\\
-We can instead try to consider the behaviour of the energy in the minimum when some random noise is present in the lattice, displacing the positions of the atoms.
-We thus looked at the behaviour of the energy as a function of the amplitude of the noise averaging over 10000 different realizations of the system with a Gaussian random displacement of amplitude $d$.
+We tried instead to consider the behaviour of the energy in the minimum when some random noise is present in the lattice, displacing the positions of the atoms.
+We looked at the behaviour of the energy as a function of the amplitude of the noise averaging over $10^4$ different realizations of the system with a Gaussian random displacement of amplitude $d$.
 
-We can see that the two energy cross at a value $d\sim 0.07$.
-We thus realize that, in real conditions, at finite temperature, the energetically preferred state is the $fcc$ configuration.\\
-\textbf{We could find the temperature of the crossing in way to see that is not above the liquid to solid transition one}
-The Argon melting temperature is $T_m=83K$
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=9cm]{energy_noise.png}
+    \caption{\it \label{noise}Energy of the minima obtained above for FCC and HCP lattices as a function of the amplitude of a random noise displacing the atoms positions}
+    \end{figure}
+\clearpage    
+
+We can see that there is no crossing between the two energies and thus it the fact that the "fcc" structure is prefererred in nature cannot be explained in this way.
+
 \subsection{Spectrum of the FCC}
 
 In the case of the hcp configuration the cell can be easily identified through the three vectors shown in Fig.(\ref{graphene}). Their coordinates are \\
@@ -127,10 +138,6 @@ From this we can construct the Brillouin zone which corresponds to the Wigner-Se
 
 The $2P_{x}, 2P_{y}$, and 2S orbitals undergo $SP_{2}$ hybridization and the electrons form strong covalent sigma bonds with the neighbouring sites. So it is sufficient to consider only the $P_{z}$ orbitals in the tight binding calculation
 
-\begin{figure}[h]
-\centering
-\caption{\label{bril}Brillouin zone of Graphene}
-\end{figure}
 From Bloch's theorem it follows that our wave function will be of the form
 
 \begin{eqnarray}
