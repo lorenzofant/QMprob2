@@ -8,6 +8,8 @@ class System():
         self.n = 16.
         self.epsilon = 120. # deviating from the value given in the Q 99.55 for better fitting
         self.sigma = 3.4
+        # constants for BFW potential
+        # TODO
 
     def potential(self, d, vtype = "lj"):
         vval=0.
@@ -23,36 +25,26 @@ class System():
             self.closen += 1
         return d
 
-    def latticesc(self, potentialType):
+    def lattice(self, latticeType, potentialType):
         self.closen = 0.
-        self.energy = self.sccell0(potentialType)
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        for i, j, k in itertools.product(r,r,r):
-            if (i,j,k) != (0,0,0): self.energy += self.sccell(self.a*i, self.a*j, self.a*k, potentialType)
-
-    def latticefcc(self, potentialType):
-        self.closen = 0.
-        #self.a = 1.5416
-        self.energy = self.fcccell0(potentialType)
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        for i, j, k in itertools.product(r,r,r):
-            if (i, j, k) != (0, 0, 0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
-
-    def latticebcc(self, potentialType):
-        self.closen = 0.
-        self.energy = self.bcccell0(potentialType)
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        for i, j, k in itertools.product(r,r,r):
-            if (i, j, k) != (0, 0, 0): self.energy += self.bcccell(self.a*i, self.a*j, self.a*k, potentialType)
-
-    def latticehcp(self, potentialType):
-        self.closen = 0.
-        #self.a = 1.09
-        self.energy = self.hcpcell0(potentialType)
         r = np.linspace(-self.n, self.n, 2.*self.n+1)
         r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
-        for i, j, k in itertools.product(r,r,r2):
-            if (i,j,k) != (0,0,0): self.energy += self.hcpcell(self.a*i, self.a*j, self.a*k, potentialType)
+        if latticeType=="sc":
+            self.energy = self.sccell0(potentialType)
+            for i, j, k in itertools.product(r,r,r):
+                if (i,j,k) != (0,0,0): self.energy += self.sccell(self.a*i, self.a*j, self.a*k, potentialType)
+        if latticeType == "fcc":
+            self.energy = self.fcccell0(potentialType)
+            for i, j, k in itertools.product(r,r,r):
+                if (i, j, k) != (0, 0, 0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
+        if latticeType == "bcc":
+            self.energy = self.bcccell0(potentialType)
+            for i, j, k in itertools.product(r,r,r):
+                if (i, j, k) != (0, 0, 0): self.energy += self.bcccell(self.a*i, self.a*j, self.a*k, potentialType)
+        if latticeType == "hcp":
+            self.energy = self.hcpcell0(potentialType)
+            for i, j, k in itertools.product(r,r,r2):
+                if (i,j,k) != (0,0,0): self.energy += self.hcpcell(self.a*i, self.a*j, self.a*k, potentialType)
 
     def sccell(self, x, y, z, potentialType):
         return self.potential(self.distance(x, y, z), potentialType)
@@ -94,19 +86,19 @@ for d in x:
     a.a = d
     ef = 0.
     eh = 0.
-    a.latticesc("lj")
+    a.lattice("sc", "lj")
     esc.append(a.energy)
     for i in range(1):
         #print( i )
         #a.a = 1.54179
-        a.latticefcc("lj")
+        a.lattice("fcc", "lj")
         ef += (a.energy)
         #a.a = 1.0902
-        a.latticehcp("lj")
+        a.lattice("hcp", "lj")
         eh += (a.energy)
     efcc.append(ef/1.)
     # print( efcc[-1] )
-    a.latticebcc("lj")
+    a.lattice("bcc", "lj")
     ebcc.append(a.energy)
     ehcp.append(eh/1.)
     # print( ehcp[-1] )
