@@ -40,9 +40,6 @@ class System():
         self.closen = 0.
         #self.a = 1.5416
         self.energy = self.fcccell0(potentialType)
-        # for i in np.linspace(-self.n, self.n, 2.*self.n+1):
-        #     for j in np.linspace(-self.n, self.n, 2.*self.n+1):
-        #         for k in np.linspace(-self.n, self.n, 2.*self.n+1):
         r = np.linspace(-self.n, self.n, 2.*self.n+1)
         for i, j, k in itertools.product(r,r,r):
             if (i,j,k) != (0,0,0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
