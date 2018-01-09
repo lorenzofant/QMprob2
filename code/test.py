@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 class System:
     def __init__(self):
         self.a=1.
-        self.n=5.
+        self.n=16.
         self.A1=1.
         self.B1=1.
         self.epsilon=1.0
