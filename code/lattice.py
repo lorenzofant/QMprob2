@@ -6,22 +6,16 @@ class System():
     def __init__(self):
         self.a = 1.
         self.n = 16.
-        self.epsilon = 1.
-        self.sigma = 1.
+        self.epsilon = 120. #deviating from the value given in the Q 99.55 for better fitting
+        self.sigma = 3.4
 
     def potential(self, d, vtype = "lj"):
         vval=0.
-        if vtype=="lj": vval= 4.*self.epsilon*(pow(self.sigma/d, 12) - pow(self.sigma/d, 6))
-        if vtype=="elj": vval= 4.*self.epsilon*(pow(self.sigma/d, 14)
-                                                # - pow(self.sigma/d, 13)
-                                                + pow(self.sigma/d, 12)
-                                                # - pow(self.sigma/d, 11)
-                                                + pow(self.sigma/d, 10)
-                                                # - pow(self.sigma/d, 9)
-                                                + pow(self.sigma/d, 8)
-                                                - pow(self.sigma/d, 6))
-        if vtype=="exp6": vval= np.exp(-1*d) - pow(self.sigma/d, 6)
-        return vval
+        r = d/self.sigma
+        if vtype=="lj": vval= (pow(r, -12) - pow(r, -6))
+        if vtype=="elj": vval= (pow(r, -14)+ pow(r, -12)+ pow(r, -10)+ pow(r, -8)- pow(r, -6))
+        if vtype=="exp6": vval= np.exp(-1*d) - pow(r, 6)
+        return self.epsilon*vval
 
     def distance(self, x, y, z):
         d = (x**2 + y**2 + z**2)**0.5
@@ -94,7 +88,7 @@ esc = []
 efcc = []
 ebcc = []
 ehcp = []
-x = np.linspace(.95, 1.2, 40)
+x = np.linspace(.95, 2, 40)
 for d in x:
     print( d )
     a.noise = 0.
