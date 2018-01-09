@@ -6,12 +6,12 @@ class System():
     def __init__(self):
         self.a = 1.
         self.n = 16.
-        self.epsilon = 120. #deviating from the value given in the Q 99.55 for better fitting
+        self.epsilon = 120. # deviating from the value given in the Q 99.55 for better fitting
         self.sigma = 3.4
 
     def potential(self, d, vtype = "lj"):
         vval=0.
-        r = d/self.sigma
+        r = d/self.sigma # to avoid recalculation of this term when calling pow()
         if vtype=="lj": vval= (pow(r, -12) - pow(r, -6))
         if vtype=="elj": vval= (pow(r, -14)+ pow(r, -12)+ pow(r, -10)+ pow(r, -8)- pow(r, -6))
         if vtype=="exp6": vval= np.exp(-1*d) - pow(r, 6)
@@ -59,14 +59,14 @@ class System():
 
     def fcccell(self, x, y, z, potentialType):
         a = 2.**0.5
-        return self.potential(self.distance(a*x+(y+z)/a + self.noise*np.random.normal(), y/a + self.noise*np.random.normal(), z/a + self.noise*np.random.normal()), potentialType)
+        return self.potential(self.distance(a*x+(y+z)/a, y/a, z/a), potentialType)
 
     def bcccell(self, x, y, z, potentialType):
         a = 1./(3.**0.5)
         return self.potential(self.distance(2.*a*x, 2.*a*y, 2.*a*z)) + self.potential(self.distance(2.*a*x+self.a*a, 2.*a*y+self.a*a, 2.*a*z+self.a*a), potentialType)
 
     def hcpcell(self, x, y, z, potentialType):
-        return self.potential(self.distance(x + y/2. + self.noise*np.random.normal(), y/2.*(3.**0.5)+self.noise*np.random.normal(), 24.**0.5*z/3.+self.noise*np.random.normal()), potentialType) + self.potential(self.distance(x+(y+self.a)/2.+self.noise*np.random.normal(), (y+self.a/3.)/2.*(3.**0.5)+self.noise*np.random.normal(), 24.**0.5*(z+self.a/2.)/3.+self.noise*np.random.normal()), potentialType)
+        return self.potential(self.distance(x + y/2., y/2.*(3.**0.5), 24.**0.5*z/3.), potentialType) + self.potential(self.distance(x+(y+self.a)/2., (y+self.a/3.)/2.*(3.**0.5), 24.**0.5*(z+self.a/2.)/3.), potentialType)
 
     def sccell0(self, potentialType):
         return 0.
@@ -79,7 +79,7 @@ class System():
         return self.potential(self.distance(self.a*a, self.a*a, self.a*a), potentialType)
 
     def hcpcell0(self, potentialType):
-        return self.potential(self.distance(self.a/2.+self.noise*np.random.normal(), self.a/3./2.*(3.**0.5)+self.noise*np.random.normal(), 6.**0.5*self.a/3.+self.noise*np.random.normal()), potentialType)
+        return self.potential(self.distance(self.a/2., self.a/3./2.*(3.**0.5), 6.**0.5*self.a/3.), potentialType)
 
 
 # main body of the program
@@ -91,7 +91,6 @@ ehcp = []
 x = np.linspace(.95, 2, 40)
 for d in x:
     print( d )
-    a.noise = 0.
     a.a = d
     ef = 0.
     eh = 0.
