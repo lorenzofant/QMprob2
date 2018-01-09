@@ -6,21 +6,21 @@ class System():
     def __init__(self):
         self.a = 1.
         self.n = 16.
-        self.epsilon = 1.
-        self.sigma = 1.
+        self.epsilon = 99.55
+        self.sigma = 3.758/pow(2, 1/6.)
 
     def potential(self, d, vtype = "lj"):
         vval=0.
         if vtype=="lj": vval= 4.*self.epsilon*(pow(self.sigma/d, 12) - pow(self.sigma/d, 6))
         if vtype=="elj": vval= 4.*self.epsilon*(pow(self.sigma/d, 14)
-                                                - pow(self.sigma/d, 13)
+                                                # - pow(self.sigma/d, 13)
                                                 + pow(self.sigma/d, 12)
-                                                - pow(self.sigma/d, 11)
+                                                # - pow(self.sigma/d, 11)
                                                 + pow(self.sigma/d, 10)
-                                                - pow(self.sigma/d, 9)
+                                                # - pow(self.sigma/d, 9)
                                                 + pow(self.sigma/d, 8)
                                                 - pow(self.sigma/d, 6))
-        if vtype=="exp6": vval= self.A1*np.exp(-1*self.B1*d) - pow(self.sigma/d, 6)
+        if vtype=="exp6": vval= np.exp(-1*d) - pow(self.sigma/d, 6)
         return vval
 
     def distance(self, x, y, z):
@@ -42,14 +42,14 @@ class System():
         self.energy = self.fcccell0(potentialType)
         r = np.linspace(-self.n, self.n, 2.*self.n+1)
         for i, j, k in itertools.product(r,r,r):
-            if (i,j,k) != (0,0,0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
+            if (i, j, k) != (0, 0, 0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
 
     def latticebcc(self, potentialType):
         self.closen = 0.
         self.energy = self.bcccell0(potentialType)
         r = np.linspace(-self.n, self.n, 2.*self.n+1)
         for i, j, k in itertools.product(r,r,r):
-            if (i,j,k) != (0,0,0): self.energy += self.bcccell(self.a*i, self.a*j, self.a*k, potentialType)
+            if (i, j, k) != (0, 0, 0): self.energy += self.bcccell(self.a*i, self.a*j, self.a*k, potentialType)
 
     def latticehcp(self, potentialType):
         self.closen = 0.
@@ -94,7 +94,7 @@ esc = []
 efcc = []
 ebcc = []
 ehcp = []
-x = np.linspace(.95, 1.2, 41)
+x = np.linspace(.95, 1.2, 40)
 for d in x:
     print( d )
     a.noise = 0.
@@ -112,21 +112,21 @@ for d in x:
         a.latticehcp("lj")
         eh += (a.energy)
     efcc.append(ef/1.)
-    print( efcc[-1] )
+    # print( efcc[-1] )
     a.latticebcc("lj")
     ebcc.append(a.energy)
     ehcp.append(eh/1.)
-    print( ehcp[-1] )
-plt.plot(x, esc, label='SC')
-plt.plot(x, efcc, label='FCC')
-print( sum(efcc)/len(efcc) )
-plt.plot(x, ebcc, label='BCC')
-print( sum(ehcp)/len(ehcp) )
-plt.plot(x, ehcp, label='HCP')
-plt.grid()
-plt.legend()
-plt.xlabel('Lattice spacing [$\sigma$]')
-plt.ylabel('Energy [$\epsilon$]')
-plt.show()
+    # print( ehcp[-1] )
+# plt.plot(x, esc, label='SC')
+# plt.plot(x, efcc, label='FCC')
+# print( sum(efcc)/len(efcc) )
+# plt.plot(x, ebcc, label='BCC')
+# print( sum(ehcp)/len(ehcp) )
+# plt.plot(x, ehcp, label='HCP')
+# plt.grid()
+# plt.legend()
+# plt.xlabel('Lattice spacing [$\sigma$]')
+# plt.ylabel('Energy [$\epsilon$]')
+# plt.show()
 # np.savetxt('energie6', [x, efcc, ehcp])
-# print("sc min = ", min(esc), "bcc min = ", min(ebcc), ":: fcc min = ", min(efcc), ":: hcp min = ", min(ehcp))
+print("sc min = ", min(esc), "bcc min = ", min(ebcc), ":: fcc min = ", min(efcc), ":: hcp min = ", min(ehcp))
