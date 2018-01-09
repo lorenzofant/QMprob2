@@ -4,20 +4,26 @@ import itertools
 
 class System():
     def __init__(self):
-        self.a = 1.
+        self.a = 3.75
         self.n = 16.
-        self.epsilon = 120. # deviating from the value given in the Q 99.55 for better fitting
+        self.epsilon = 99.55 # deviating from the value given in the Q 99.55 for better fitting
         self.sigma = 3.4
         # constants for BFW potential
-        # TODO
+        self.bfw_epsilon=142.1; self.bfw_sigma=3.76
+        self.bfw_C6 = -1.10727; self.bfw_A0 = 0.27783; self.bfw_A3 = -25.2696
+        self.bfw_C8 = -0.16971; self.bfw_A1 = -4.50431; self.bfw_A4 = -102.0195
+        self.bfw_alpha = 12.5; self.bfw_C10 = -0.01361; self.bfw_A2 = -8.33122; self.bfw_A5 = -113.25
+        self.bfw_delta = 0.01
 
     def potential(self, d, vtype = "lj"):
         vval=0.
-        r = d/self.sigma # to avoid recalculation of this term when calling pow()
-        if vtype=="lj": vval= (pow(r, -12) - pow(r, -6))
-        if vtype=="elj": vval= (pow(r, -14)+ pow(r, -12)+ pow(r, -10)+ pow(r, -8)- pow(r, -6))
-        if vtype=="exp6": vval= np.exp(-1*d) - pow(r, 6)
-        return self.epsilon*vval
+        if vtype=="lj": 
+            r = d/self.sigma # to avoid recalculation of this term when calling pow()
+            vval= 4*self.epsilon*(pow(r, -12) - pow(r, -6))
+        if vtype=="bfw": 
+            r = d/self.bfw_sigma
+            vval= self.bfw_epsilon*(np.exp(self.bfw_alpha*(1-r))*(self.bfw_A1*(r-1)+self.bfw_A2*pow((r-1),2)+self.bfw_A3*pow((r-1),3)+self.bfw_A4*pow((r-1),4)+self.bfw_A5*pow((r-1),5))+(self.bfw_C6/(self.bfw_delta+pow(r,6))+self.bfw_C8/(self.bfw_delta+pow(r,8))+self.bfw_C10/(self.bfw_delta+pow(r,10))))
+        return vval
 
     def distance(self, x, y, z):
         d = (x**2 + y**2 + z**2)**0.5
@@ -47,7 +53,8 @@ class System():
                 if (i,j,k) != (0,0,0): self.energy += self.hcpcell(self.a*i, self.a*j, self.a*k, potentialType)
 
     def sccell(self, x, y, z, potentialType):
-        return self.potential(self.distance(x, y, z), potentialType)
+        a=1.0
+        return self.potential(self.distance(a*x, a*y, a*z), potentialType)
 
     def fcccell(self, x, y, z, potentialType):
         a = 2.**0.5
@@ -80,7 +87,7 @@ esc = []
 efcc = []
 ebcc = []
 ehcp = []
-x = np.linspace(.95, 2, 40)
+x = np.linspace(3, 5, 40)
 for d in x:
     print( d )
     a.a = d
@@ -102,16 +109,16 @@ for d in x:
     ebcc.append(a.energy)
     ehcp.append(eh/1.)
     # print( ehcp[-1] )
-# plt.plot(x, esc, label='SC')
-# plt.plot(x, efcc, label='FCC')
-# print( sum(efcc)/len(efcc) )
-# plt.plot(x, ebcc, label='BCC')
-# print( sum(ehcp)/len(ehcp) )
-# plt.plot(x, ehcp, label='HCP')
-# plt.grid()
-# plt.legend()
-# plt.xlabel('Lattice spacing [$\sigma$]')
-# plt.ylabel('Energy [$\epsilon$]')
-# plt.show()
+plt.plot(x, esc, label='SC')
+plt.plot(x, efcc, label='FCC')
+print( sum(efcc)/len(efcc) )
+plt.plot(x, ebcc, label='BCC')
+print( sum(ehcp)/len(ehcp) )
+plt.plot(x, ehcp, label='HCP')
+plt.grid()
+plt.legend()
+plt.xlabel('Lattice spacing [$\sigma$]')
+plt.ylabel('Energy [$\epsilon$]')
+plt.show()
 # np.savetxt('energie6', [x, efcc, ehcp])
 print("sc min = ", min(esc), "bcc min = ", min(ebcc), ":: fcc min = ", min(efcc), ":: hcp min = ", min(ehcp))
