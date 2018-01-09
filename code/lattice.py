@@ -6,8 +6,8 @@ class System():
     def __init__(self):
         self.a = 1.
         self.n = 16.
-        self.epsilon = 99.55
-        self.sigma = 3.758/pow(2, 1/6.)
+        self.epsilon = 1.
+        self.sigma = 1.
 
     def potential(self, d, vtype = "lj"):
         vval=0.
