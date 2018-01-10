@@ -6,7 +6,8 @@ class System():
     def __init__(self):
         self.a = 3.75
         self.n = 16.
-        self.epsilon = 99.55 # deviating from the value given in the Q 99.55 for better fitting
+        # constants for LJ potential
+        self.epsilon = 137.37 #99.55
         self.sigma = 3.4
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
@@ -14,15 +15,37 @@ class System():
         self.bfw_C8 = -0.16971; self.bfw_A1 = -4.50431; self.bfw_A4 = -102.0195
         self.bfw_alpha = 12.5; self.bfw_C10 = -0.01361; self.bfw_A2 = -8.33122; self.bfw_A5 = -113.25
         self.bfw_delta = 0.01
+        # constants for BBMS potential
+        self.bbms_epsilon=142.1; self.bbms_sigma=3.76
+        self.bbms_C6 = -1.10727; self.bbms_A0 = 0.27783; self.bbms_A3 = -25.2696
+        self.bbms_C8 = -0.16971; self.bbms_A1 = -4.50431; self.bbms_A4 = -102.0195
+        self.bbms_alpha = 12.5; self.bbms_C10 = -0.01361; self.bbms_A2 = -8.33122; self.bbms_A5 = -113.25
+        self.bbms_delta = 0.01
+        # constants for hdf potential
+        self.hfd_epsilon = 143.224;self.hfd_C6 = -1.0914254;self.hfd_A = 0.9502720e7
+        self.hfd_sigma =3.759; self.hfd_C8 = -0.6002595
+        self.hfd_alpha = 16.345655; self.hfd_C10 = -0.3700113; self.hfd_gamma = 2.0
 
     def potential(self, d, vtype = "lj"):
         vval=0.
         if vtype=="lj": 
             r = d/self.sigma # to avoid recalculation of this term when calling pow()
             vval= 4*self.epsilon*(pow(r, -12) - pow(r, -6))
+
         if vtype=="bfw": 
             r = d/self.bfw_sigma
             vval= self.bfw_epsilon*(np.exp(self.bfw_alpha*(1-r))*(self.bfw_A1*(r-1)+self.bfw_A2*pow((r-1),2)+self.bfw_A3*pow((r-1),3)+self.bfw_A4*pow((r-1),4)+self.bfw_A5*pow((r-1),5))+(self.bfw_C6/(self.bfw_delta+pow(r,6))+self.bfw_C8/(self.bfw_delta+pow(r,8))+self.bfw_C10/(self.bfw_delta+pow(r,10))))
+            
+        if vtype=="bbms": 
+            r = d/self.bbms_sigma
+            vval= self.bbms_epsilon*(np.exp(self.bbms_alpha*(1-r))*(self.bbms_A1*(r-1)+self.bbms_A2*pow((r-1),2)+self.bbms_A3*pow((r-1),3)+self.bbms_A4*pow((r-1),4)+self.bbms_A5*pow((r-1),5))+(self.bbms_C6/(self.bbms_delta+pow(r,6))+self.bbms_C8/(self.bbms_delta+pow(r,8))+self.bbms_C10/(self.bbms_delta+pow(r,10)))+self.bbms_alpha*np.exp(-50.0*pow(r-1.33,2)))
+
+        if vtype=="hfd": 
+            r = d/self.hfd_sigma
+            if r <= 1.4:
+                vval = self.hfd_epsilon*(self.hfd_A*np.exp(-1*self.hfd_alpha*r)+(self.hfd_C6*pow(r,-6)+self.hfd_C8*pow(r,-8)+self.hfd_C10*pow(r,-10))*np.exp(-1*(pow(1.4/r,2))))
+            else:
+                vval = self.hfd_epsilon*(self.hfd_A*np.exp(-1*self.hfd_alpha*r)+(self.hfd_C6*pow(r,-6)+self.hfd_C8*pow(r,-8)+self.hfd_C10*pow(r,-10)))
         return vval
 
     def distance(self, x, y, z):
@@ -83,42 +106,72 @@ class System():
 
 # main body of the program
 a = System()
-esc = []
-efcc = []
-ebcc = []
-ehcp = []
-x = np.linspace(3, 5, 40)
+esc = []; ebcc = []
+efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
+ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
+x = np.linspace(2, 5, 40)
 for d in x:
     print( d )
     a.a = d
     ef = 0.
     eh = 0.
-    a.lattice("sc", "lj")
-    esc.append(a.energy)
-    for i in range(1):
-        #print( i )
-        #a.a = 1.54179
-        a.lattice("fcc", "lj")
-        ef += (a.energy)
-        #a.a = 1.0902
-        a.lattice("hcp", "lj")
-        eh += (a.energy)
-    efcc.append(ef/1.)
+    # a.lattice("fcc", "lj")
+    # efcc_lj.append(a.energy)
+    a.lattice("hcp", "lj")
+    ehcp_lj.append(a.energy)
+
+    # a.lattice("fcc", "bfw")
+    # efcc_bfw.append(a.energy)
+    a.lattice("hcp", "bfw")
+    ehcp_bfw.append(a.energy)
+
+    # a.lattice("fcc", "hfd")
+    # efcc_hfd.append(a.energy)
+    a.lattice("hcp", "hfd")
+    ehcp_hfd.append(a.energy)
+
+    # a.lattice("fcc", "bbms")
+    # efcc_bbms.append(a.energy)
+    # a.lattice("hcp", "bbms")
+    # ehcp_bbms.append(a.energy)
+
+    # a.lattice("sc", "hfd")
+    # esc.append(a.energy)
+    # for i in range(1):
+    #     #print( i )
+    #     #a.a = 1.54179
+    #     a.lattice("fcc", "bfw")
+    #     ef += (a.energy)
+    #     #a.a = 1.0902
+    #     a.lattice("hcp", "bfw")
+    #     eh += (a.energy)
+    # efcc.append(ef/1.)
     # print( efcc[-1] )
-    a.lattice("bcc", "lj")
-    ebcc.append(a.energy)
-    ehcp.append(eh/1.)
+    # a.lattice("bcc", "hfd")
+    # ebcc.append(a.energy)
+    # ehcp.append(eh/1.)
     # print( ehcp[-1] )
-plt.plot(x, esc, label='SC')
-plt.plot(x, efcc, label='FCC')
-print( sum(efcc)/len(efcc) )
-plt.plot(x, ebcc, label='BCC')
-print( sum(ehcp)/len(ehcp) )
-plt.plot(x, ehcp, label='HCP')
+# plt.plot(x, esc, label='SC')
+
+# plt.plot(x, efcc_lj, label='FCC with LJ')
+# plt.plot(x, efcc_bfw, label='FCC with BFW')
+# plt.plot(x, efcc_hfd, label='FCC with HFD')
+# plt.plot(x, efcc_bbms, label='FCC with BBMS')
+
+# print( sum(efcc)/len(efcc) )
+# plt.plot(x, ebcc, label='BCC')
+# print( sum(ehcp)/len(ehcp) )
+plt.plot(x, ehcp_lj, label='HCP with LJ')
+plt.plot(x, ehcp_bfw, label='HCP with BFW')
+plt.plot(x, ehcp_hfd, label='HCP with HFD')
+# plt.plot(x, ehcp_bbms, label='HCP with BBMS')
 plt.grid()
 plt.legend()
 plt.xlabel('Lattice spacing [$\sigma$]')
 plt.ylabel('Energy [$\epsilon$]')
 plt.show()
 # np.savetxt('energie6', [x, efcc, ehcp])
-print("sc min = ", min(esc), "bcc min = ", min(ebcc), ":: fcc min = ", min(efcc), ":: hcp min = ", min(ehcp))
+# print("LJ, fcc min = ", min(efcc_lj), ":: hcp min = ", min(ehcp_lj), ":: difference factor ",1-(min(efcc_lj)/min(ehcp_lj)))
+# print("BFW, fcc min = ", min(efcc_bfw), ":: hcp min = ", min(ehcp_bfw), ":: difference factor ",1-(min(efcc_bfw)/min(ehcp_bfw)))
+# print("BFW, fcc min = ", min(efcc_hfd), ":: hcp min = ", min(ehcp_hfd), ":: difference factor ",1-(min(efcc_hfd)/min(ehcp_hfd)))
+# print("BFW, fcc min = ", min(efcc_bbms), ":: hcp min = ", min(ehcp_bbms), ":: difference factor ",1-(min(efcc_bbms)/min(ehcp_bbms)))
