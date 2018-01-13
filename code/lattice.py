@@ -9,6 +9,7 @@ class System():
         # constants for LJ potential
         self.epsilon = 137.37 #99.55
         self.sigma = 3.4
+        self.mass = 1.
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
         self.bfw_C6 = -1.10727; self.bfw_A0 = 0.27783; self.bfw_A3 = -25.2696
@@ -47,6 +48,35 @@ class System():
             else:
                 vval = self.hfd_epsilon*(self.hfd_A*np.exp(-1*self.hfd_alpha*r)+(self.hfd_C6*pow(r,-6)+self.hfd_C8*pow(r,-8)+self.hfd_C10*pow(r,-10)))
         return vval
+
+    def potentialp(self, x, i, j):
+        d = np.linalg.norm(x)
+        return self.LJpotential_deriv2(d)*np.dot(x,i)*np.dot(x,j)/(d**2) + self.LJpotential_deriv(d)*(np.dot(i,j)/d - np.dot(x,i)*np.dot(x,j)/(d**3))
+
+    def LJpotential_deriv(self, d):
+        r = d/self.sigma
+        return 4*self.epsilon/self.sigma*(12.*pow(r, -13) - 6.*pow(r, -7))
+
+
+    def LJpotential_2deriv(self, d):
+        r = d/self.sigma
+        return vval= 4*self.epsilon/(self.sigma**2)*(156.*pow(r, -14) - 42.*pow(r, -8))
+
+    def hessianmdynamicmatrix(self, x, y, z):
+        self.dm = []
+        for i in range(3):
+            c = np.array[0,0,0])
+            c(i)+=1
+            a = []
+            for j in range(3):
+                d = np.array([0,0,0])
+                d(i)+=1
+                self.energy = self.hcpcell0(potentialType)
+                for i, j, k in itertools.product(r,r,r2):
+                    x = np.array([self.a*i, self.a*j, self.a*k])
+                    if (i,j,k) != (0,0,0): self.energy += self.hcpcellp(x, c, d)*self.phasek(x)
+                    self.energy /= self.mass
+
 
     def distance(self, x, y, z):
         d = (x**2 + y**2 + z**2)**0.5
@@ -102,6 +132,10 @@ class System():
 
     def hcpcell0(self, potentialType):
         return self.potential(self.distance(self.a/2., self.a/3./2.*(3.**0.5), 6.**0.5*self.a/3.), potentialType)
+
+
+    def hcpcellp(self, x, c, d):
+        return self.potentialp([x[0] + x[1]/2., x[1]/2.*(3.**0.5), 24.**0.5*x[3]/3.], c, d) + self.potentialp([x[0] + (x[1] + self.a)/2., (x[1] + self.a/3.)/2.*(3.**0.5), 24.**0.5*(x[2] + self.a/2.)/3.], c, d)
 
 
 # main body of the program
