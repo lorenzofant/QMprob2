@@ -160,9 +160,9 @@ for el in x:
     a.k = el*np.array([0.,0.,1.])
     a.dynamicmatrix()
     w.append(a.w)
-w = np.transpose(w)
+w = np.array(np.transpose(w))
 for el in w:
-    plt.plot(x,el)
+    plt.plot(x,el**0.5)
 plt.show()
 x = np.linspace(1.03,1.12,20)
 a.n =14.
