@@ -4,11 +4,11 @@ import itertools
 
 class System():
     def __init__(self):
-        self.a = 3.75
-        self.n = 16.
+        self.a = 1.0902#3.75
+        self.n = 4.
         # constants for LJ potential
-        self.epsilon = 137.37 #99.55
-        self.sigma = 3.4
+        self.epsilon = 1. #137.37 #99.55
+        self.sigma = 1. #3.4
         self.mass = 1.
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
@@ -55,28 +55,34 @@ class System():
 
     def LJpotential_deriv(self, d):
         r = d/self.sigma
-        return 4*self.epsilon/self.sigma*(12.*pow(r, -13) - 6.*pow(r, -7))
+        return -4.*self.epsilon/self.sigma*(12.*pow(r, -13) - 6.*pow(r, -7))
 
-
-    def LJpotential_2deriv(self, d):
+    def LJpotential_deriv2(self, d):
         r = d/self.sigma
-        return vval= 4*self.epsilon/(self.sigma**2)*(156.*pow(r, -14) - 42.*pow(r, -8))
+        return 4.*self.epsilon/(self.sigma**2)*(156.*pow(r, -14) - 42.*pow(r, -8))
 
-    def hessianmdynamicmatrix(self, x, y, z):
+    def dynamicmatrix(self):
         self.dm = []
-        for i in range(3):
-            c = np.array[0,0,0])
-            c(i)+=1
+        r = np.linspace(-self.n, self.n, 2.*self.n+1)
+        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
+        for l in range(3):
+            c = np.array([0,0,0])
+            c[l]+=1
             a = []
-            for j in range(3):
-                d = np.array([0,0,0])
-                d(i)+=1
-                self.energy = self.hcpcell0(potentialType)
-                for i, j, k in itertools.product(r,r,r2):
+            for m in range(3):
+                d = np.array([0.,0.,0.])
+                d[m]+=1.
+                self.energy = 0.#self.hcpcell0(potentialType)
+                for i, j, k in itertools.product(r,r,r):
                     x = np.array([self.a*i, self.a*j, self.a*k])
-                    if (i,j,k) != (0,0,0): self.energy += self.hcpcellp(x, c, d)*self.phasek(x)
-                    self.energy /= self.mass
+                    if (i,j,k) != (0,0,0): self.energy += self.fcccellp(x, c, d)*self.phasek(x)
+                self.energy /= self.mass
+                a.append(self.energy)
+            self.dm.append(a)
+        self.w = np.linalg.eigvals(self.dm)
 
+    def phasek(self, x):
+        return np.e**(1.j*np.dot(self.k,x))
 
     def distance(self, x, y, z):
         d = (x**2 + y**2 + z**2)**0.5
@@ -135,7 +141,11 @@ class System():
 
 
     def hcpcellp(self, x, c, d):
-        return self.potentialp([x[0] + x[1]/2., x[1]/2.*(3.**0.5), 24.**0.5*x[3]/3.], c, d) + self.potentialp([x[0] + (x[1] + self.a)/2., (x[1] + self.a/3.)/2.*(3.**0.5), 24.**0.5*(x[2] + self.a/2.)/3.], c, d)
+        return self.potentialp([x[0] + x[1]/2., x[1]/2.*(3.**0.5), 24.**0.5*x[2]/3.], c, d) + self.potentialp([x[0] + (x[1] + self.a)/2., (x[1] + self.a/3.)/2.*(3.**0.5), 24.**0.5*(x[2] + self.a/2.)/3.], c, d)
+
+    def fcccellp(self, x, c, d):
+        a = 2.**0.5
+        return self.potentialp([a*x[0]+(x[1]+x[2])/a, x[1]/a, x[2]/a], c, d)
 
 
 # main body of the program
@@ -143,26 +153,38 @@ a = System()
 esc = []; ebcc = []
 efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
 ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
-x = np.linspace(2, 5, 40)
+x = np.linspace(0.,(3./2.)**0.5*np.pi,100)
+w = []
+for el in x:
+    print el
+    a.k = el*np.array([0.,0.,1.])
+    a.dynamicmatrix()
+    w.append(a.w)
+w = np.transpose(w)
+for el in w:
+    plt.plot(x,el)
+plt.show()
+x = np.linspace(1.03,1.12,20)
+a.n =14.
 for d in x:
     print( d )
     a.a = d
     ef = 0.
     eh = 0.
-    # a.lattice("fcc", "lj")
-    # efcc_lj.append(a.energy)
+    a.lattice("fcc", "lj")
+    efcc_lj.append(a.energy)
     a.lattice("hcp", "lj")
     ehcp_lj.append(a.energy)
 
     # a.lattice("fcc", "bfw")
     # efcc_bfw.append(a.energy)
-    a.lattice("hcp", "bfw")
-    ehcp_bfw.append(a.energy)
+    # a.lattice("hcp", "bfw")
+    # ehcp_bfw.append(a.energy)
 
     # a.lattice("fcc", "hfd")
     # efcc_hfd.append(a.energy)
-    a.lattice("hcp", "hfd")
-    ehcp_hfd.append(a.energy)
+    # a.lattice("hcp", "hfd")
+    # ehcp_hfd.append(a.energy)
 
     # a.lattice("fcc", "bbms")
     # efcc_bbms.append(a.energy)
@@ -187,7 +209,7 @@ for d in x:
     # print( ehcp[-1] )
 # plt.plot(x, esc, label='SC')
 
-# plt.plot(x, efcc_lj, label='FCC with LJ')
+plt.plot(x, efcc_lj, label='FCC with LJ')
 # plt.plot(x, efcc_bfw, label='FCC with BFW')
 # plt.plot(x, efcc_hfd, label='FCC with HFD')
 # plt.plot(x, efcc_bbms, label='FCC with BBMS')
@@ -196,8 +218,8 @@ for d in x:
 # plt.plot(x, ebcc, label='BCC')
 # print( sum(ehcp)/len(ehcp) )
 plt.plot(x, ehcp_lj, label='HCP with LJ')
-plt.plot(x, ehcp_bfw, label='HCP with BFW')
-plt.plot(x, ehcp_hfd, label='HCP with HFD')
+# plt.plot(x, ehcp_bfw, label='HCP with BFW')
+# plt.plot(x, ehcp_hfd, label='HCP with HFD')
 # plt.plot(x, ehcp_bbms, label='HCP with BBMS')
 plt.grid()
 plt.legend()
