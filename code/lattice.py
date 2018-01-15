@@ -6,10 +6,10 @@ class System():
     def __init__(self):
         self.n = 3.
         # constants for LJ potential
-        self.epsilon = 99.55 #137.37 #
-        self.sigma = 3.758/(2.**(1./6.))
+        self.epsilon = 99.55/100. #137.37 
+        self.sigma = 3.758/(2.**(1./6.))*10.**(-10.) 
         self.a = 1.0902*self.sigma #3.75
-        self.mass = 1.
+        self.mass = 1.#*10.**(-27)
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
         self.bfw_C6 = -1.10727; self.bfw_A0 = 0.27783; self.bfw_A3 = -25.2696
@@ -98,7 +98,7 @@ class System():
                     x = self.a*np.array([i, j, k])
                     if l//3==m//3:
                         if (i,j,k) != (0,0,0):              
-                             self.energy += self.hcpcellp1(x, c, d, -l//3.+m//3.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
+                             self.energy += self.hcpcellp1(x, c, d, 0.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
                     else:             
                         self.energy += self.hcpcellp1(x, c, d, -l//3.+m//3.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
                 self.energy /= self.mass
@@ -186,7 +186,7 @@ ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
 x = np.linspace(0.,0.84,100) #1./2.**0.5/a.a*np.pi
 w = []
 
-x = np.linspace(1.0895,1.0905,5)
+x = np.linspace(1.0899,1.0905,20)
 dx = x[1]-x[0]
 a.n =14.
 for d in x:
@@ -232,7 +232,8 @@ for d in x:
     # print( ehcp[-1] )
 # plt.plot(x, esc, label='SC')
 d = (efcc_lj[0]-2.*efcc_lj[2]+efcc_lj[4])/(4.*(dx*a.sigma)**2)
-print (d*a.a)**0.5
+print (d*a.a**2/a.mass)**0.5
+print (d*a.a**3/a.mass)**0.5
 
 plt.plot(x, efcc_lj, label='FCC with LJ')
 # plt.plot(x, efcc_bfw, label='FCC with BFW')
@@ -242,7 +243,7 @@ plt.plot(x, efcc_lj, label='FCC with LJ')
 # print( sum(efcc)/len(efcc) )
 # plt.plot(x, ebcc, label='BCC')
 # print( sum(ehcp)/len(ehcp) )
-plt.plot(x, ehcp_lj, label='HCP with LJ')
+#plt.plot(x, ehcp_lj, label='HCP with LJ')
 # plt.plot(x, ehcp_bfw, label='HCP with BFW')
 # plt.plot(x, ehcp_hfd, label='HCP with HFD')
 # plt.plot(x, ehcp_bbms, label='HCP with BBMS')
