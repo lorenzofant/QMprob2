@@ -70,11 +70,12 @@ We can see that there is no crossing between the two energies and thus it the fa
 
 \subsection{Spectrum of the HCP}
 
-In the case of the hcp configuration the cell can be easily identified through the three vectors of coordinates\\
+In the case of the hcp configuration we finde a structure where we have two atoms per unit cell.
+The cell can be easily identified through the three vectors of coordinates\\
 \begin{minipage}{0.3\textwidth}
 \centering
 \begin{equation*}
-R_1 =
+R_1 = a
 \begin{bmatrix}
 	1 \\
     0 \\
@@ -87,7 +88,7 @@ R_1 =
 \begin{minipage}{0.3\textwidth}
 \centering
 \begin{equation*}
-R_2 =
+R_2 = a
 \begin{bmatrix}
     \frac{1}{2} \\
     \frac{\sqrt{3}}{2}  \\
@@ -98,11 +99,11 @@ R_2 =
 \begin{minipage}{0.3\textwidth}
 \centering
 \begin{equation*}
-R_3 =
+R_3 = a
 \begin{bmatrix}
-    \frac{1}{2} \\
-    \frac{1}{2\sqrt{3}}  \\
-    \sqrt{\frac{2}{3}} \\
+    0 \\
+    0 \\
+    2\sqrt{\frac{2}{3}} \\
 \end{bmatrix}
 \end{equation*}
 \end{minipage}
@@ -113,7 +114,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
 \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
-    G_1 =
+    G_1 = \frac{2\pi}{a}
     \begin{bmatrix}
         0 \\
         0 \\
@@ -126,10 +127,10 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
-    G_2 =
+    G_2 = \frac{2\pi}{a}
     \begin{bmatrix}
-        \frac{1}{2} \\
-        \frac{\sqrt{3}}{2}  \\
+        0 \\
+        \frac{2}{\sqrt{3}}  \\
         0 \\
     \end{bmatrix}
     \end{equation*}
@@ -137,24 +138,60 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
-    G_3 =
-    \begin{bmatrix}
-        \frac{1}{2} \\
-        \frac{1}{2\sqrt{3}}  \\
-        \sqrt{\frac{2}{3}} \\
-    \end{bmatrix}
-    \end{equation*}
-    \end{minipage}
-    \subsection{Spectrum of the FCC}
-
-    In the case of the hcp configuration the cell can be easily identified through the three vectors of coordinates\\
-    \begin{minipage}{0.3\textwidth}
-    \centering
-    \begin{equation*}
-    R_1 =
+    G_3 = \frac{2\pi}{a}
     \begin{bmatrix}
         1 \\
+        -\frac{1}{\sqrt{3}}  \\
         0 \\
+    \end{bmatrix}
+    \end{equation*}
+    \end{minipage}
+
+    While the second atom in the cell is placed in
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \begin{equation*}
+        R_1 = a
+        \begin{bmatrix}
+            n_1 + \frac{n_2 + 1}{2} \\
+            \frac{\sqrt{3}n_2 + \frac{1}{3}}{2} \\
+            (2n_3 + 1)\sqrt{\frac{2}{3}} \\
+            
+        \end{bmatrix}
+        \end{equation*}
+        
+        \end{minipage}
+        
+    To evaluate the spectrum of the phonon dispersion one can evaluate, in the harmonic approximation, the equation 
+    \begin{equation}
+        \omega^2 u_{i,\alpha, g} = \sum_{m,\beta} \frac{1}{M}\frac{\partial^2 V(r)}{\partial r_{i,\alpha, g}\partial r_{m,\beta,f}}e^{i\underline{q}\underline{r}_{im}}u_{m,\beta, f}
+    \end{equation}
+    where the approximation on the solution $s_{i,\alpha}=e^{i(\underline{q}\underline{r}_i - \omega)}u_{\alpha}$ was applied assuming the harmonic nature of the system.
+    The indeces $\alpha,\beta$ can assume values between $x,y,z$, the indeces $i,m$ along the cells in the lattice and $g,f$ along the atoms inside the unit cell.
+    We can now define 
+    \begin{equation}
+        \Phi_{\alpha\beta}^{imgf}(r):=\frac{\partial^2 V(r)}{\partial r_{i,\alpha,g}\partial r_{m,\beta,f}}
+    \end{equation}
+    where the expression for the second derivative of the potential reads
+    \begin{equation*}
+        \frac{\partial^2 V(r)}{\partial r_{i,\alpha,g}\partial r_{m,\beta,f}} = \sum_{jh}\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right](\delta_{gf}\delta_{im}-\delta_{fh}\delta_{jm})
+    \end{equation*}
+    and from here the dynamical matrix
+    \begin{equation}
+        D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(2\delta_{gf}-e^{i\underline{q}\underline{r}_{ij}}\right)
+    \end{equation}
+    The diagonalization of the former thus brings to the dispersion realtion of the phonons.
+
+    \subsection{Spectrum of the FCC}
+
+    In the case of the fcc configuration the cell contains only one atom and can be identified through the three vectors of coordinates\\
+    \begin{minipage}{0.3\textwidth}
+    \centering
+    \begin{equation*}
+    R_1 = a
+    \begin{bmatrix}
+        \frac{1}{\sqrt{2}} \\
+        \frac{1}{\sqrt{2}} \\
         0 \\
         
     \end{bmatrix}
@@ -164,22 +201,22 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
-    R_2 =
+    R_2 = a
     \begin{bmatrix}
-        \frac{1}{2} \\
-        \frac{\sqrt{3}}{2}  \\
+        \frac{1}{\sqrt{2}} \\
         0 \\
+        \frac{1}{\sqrt{2}} \\
     \end{bmatrix}
     \end{equation*}
     \end{minipage}
     \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
-    R_3 =
+    R_3 = a
     \begin{bmatrix}
-        \frac{1}{2} \\
-        \frac{1}{2\sqrt{3}}  \\
-        \sqrt{\frac{2}{3}} \\
+        0 \\
+        \frac{1}{\sqrt{2}}  \\
+        \frac{1}{\sqrt{2}} \\
     \end{bmatrix}
     \end{equation*}
     \end{minipage}
@@ -190,11 +227,11 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \begin{minipage}{0.3\textwidth}
         \centering
         \begin{equation*}
-        G_1 =
+        G_1 = \frac{2\pi}{a}
         \begin{bmatrix}
-            0 \\
-            0 \\
-            \sqrt{\frac{3}{2}}\pi \\
+            \frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} \\
+            -\frac{1}{\sqrt{2}} \\
             
         \end{bmatrix}
         \end{equation*}
@@ -203,27 +240,43 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
         \begin{minipage}{0.3\textwidth}
         \centering
         \begin{equation*}
-        G_2 =
+        G_2 = \frac{2\pi}{a}
         \begin{bmatrix}
-            \frac{1}{2} \\
-            \frac{\sqrt{3}}{2}  \\
-            0 \\
+            \frac{1}{\sqrt{2}} \\
+            -\frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} \\
+            
         \end{bmatrix}
         \end{equation*}
         \end{minipage}
         \begin{minipage}{0.3\textwidth}
         \centering
         \begin{equation*}
-        G_3 =
+        G_3 = \frac{2\pi}{a}
         \begin{bmatrix}
-            \frac{1}{2} \\
-            \frac{1}{2\sqrt{3}}  \\
-            \sqrt{\frac{2}{3}} \\
+            -\frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} \\
+        
         \end{bmatrix}
         \end{equation*}
         \end{minipage}
     
-From this we can construct the Brillouin zone which corresponds to the Wigner-Seitz cell in K-space\\
+        
+        We can now define 
+        \begin{equation}
+            \Phi_{\alpha\beta}^{im}(r):=\frac{\partial^2 V(r)}{\partial r_{i,\alpha}\partial r_{m,\beta}}
+        \end{equation}
+        where the expression for the second derivative of the potential reads
+        \begin{equation*}
+            \frac{\partial^2 V(r)}{\partial r_{i,\alpha,g}\partial r_{m,\beta,f}} = \sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right](\delta_{in}-\delta_{jn})
+        \end{equation*}
+        and from here the dynamical matrix
+        \begin{equation}
+            D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(1-e^{i\underline{q}\underline{r}_{ij}}\right)
+        \end{equation}
+        The diagonalization of the former thus brings to the dispersion realtion of the phonons.
+    
 
 The $2P_{x}, 2P_{y}$, and 2S orbitals undergo $SP_{2}$ hybridization and the electrons form strong covalent sigma bonds with the neighbouring sites. So it is sufficient to consider only the $P_{z}$ orbitals in the tight binding calculation
 

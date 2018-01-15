@@ -4,11 +4,11 @@ import itertools
 
 class System():
     def __init__(self):
-        self.a = 1.0902#3.75
-        self.n = 4.
+        self.n = 3.
         # constants for LJ potential
-        self.epsilon = 1. #137.37 #99.55
-        self.sigma = 1. #3.4
+        self.epsilon = 99.55 #137.37 #
+        self.sigma = 3.758/(2.**(1./6.))
+        self.a = 1.0902*self.sigma #3.75
         self.mass = 1.
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
@@ -51,7 +51,7 @@ class System():
 
     def potentialp(self, x, i, j):
         d = np.linalg.norm(x)
-        return self.LJpotential_deriv2(d)*np.dot(x,i)*np.dot(x,j)/(d**2) + self.LJpotential_deriv(d)*(np.dot(i,j)/d - np.dot(x,i)*np.dot(x,j)/(d**3))
+        return self.LJpotential_deriv2(d)*(np.dot(x,i)*np.dot(x,j))/(d**2) + self.LJpotential_deriv(d)*(np.dot(i,j)/d - (np.dot(x,i)*np.dot(x,j))/(d**3))
 
     def LJpotential_deriv(self, d):
         r = d/self.sigma
@@ -66,23 +66,50 @@ class System():
         r = np.linspace(-self.n, self.n, 2.*self.n+1)
         r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
         for l in range(3):
-            c = np.array([0,0,0])
-            c[l]+=1
+            c = np.array([0.,0.,0.])
+            c[l]+=1.
             a = []
             for m in range(3):
                 d = np.array([0.,0.,0.])
                 d[m]+=1.
                 self.energy = 0.#self.hcpcell0(potentialType)
                 for i, j, k in itertools.product(r,r,r):
-                    x = np.array([self.a*i, self.a*j, self.a*k])
-                    if (i,j,k) != (0,0,0): self.energy += self.fcccellp(x, c, d)*self.phasek(x)
+                    x = self.a*np.array([i, j, k])
+                    if (i,j,k) != (0,0,0): 
+                        self.energy += self.fcccellp(x, c, d)*(1.-self.phasek(x))
                 self.energy /= self.mass
                 a.append(self.energy)
             self.dm.append(a)
-        self.w = np.linalg.eigvals(self.dm)
+        self.w = np.sort(np.linalg.eigvals(self.dm))
+
+    def dynamicmatrixhcp(self):
+        self.dm = []
+        r = np.linspace(-self.n, self.n, 2.*self.n+1)
+        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
+        for l in range(6):
+            c = np.array([0.,0.,0.])
+            c[l%3]+=1.
+            a = []
+            for m in range(6):
+                d = np.array([0.,0.,0.])
+                d[m%3]+=1.
+                self.energy = 0.#self.hcpcell0(potentialType)
+                for i, j, k in itertools.product(r,r,r2):
+                    x = self.a*np.array([i, j, k])
+                    if l//3==m//3:
+                        if (i,j,k) != (0,0,0):              
+                             self.energy += self.hcpcellp1(x, c, d, -l//3.+m//3.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
+                    else:             
+                        self.energy += self.hcpcellp1(x, c, d, -l//3.+m//3.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
+                self.energy /= self.mass
+                a.append(self.energy)
+            self.dm.append(a)
+        print(np.shape(self.dm))
+        self.w = np.sort(np.linalg.eigvals(self.dm))
+
 
     def phasek(self, x):
-        return np.e**(1.j*np.dot(self.k,x))
+        return np.e**(-1.j*np.dot(self.k,x))#np.cos(np.dot(self.k,x))
 
     def distance(self, x, y, z):
         d = (x**2 + y**2 + z**2)**0.5
@@ -140,12 +167,15 @@ class System():
         return self.potential(self.distance(self.a/2., self.a/3./2.*(3.**0.5), 6.**0.5*self.a/3.), potentialType)
 
 
-    def hcpcellp(self, x, c, d):
-        return self.potentialp([x[0] + x[1]/2., x[1]/2.*(3.**0.5), 24.**0.5*x[2]/3.], c, d) + self.potentialp([x[0] + (x[1] + self.a)/2., (x[1] + self.a/3.)/2.*(3.**0.5), 24.**0.5*(x[2] + self.a/2.)/3.], c, d)
+    def hcpcellp2(self, x, c, d):
+        return self.potentialp([x[0] + x[1]/2., x[1]/2.*(3.**0.5), 24.**0.5*x[2]/3.], c, d) 
+
+    def hcpcellp1(self, x, c, d, e):
+        return self.potentialp([x[0] + (x[1] + e*self.a)/2., (x[1] + e*self.a/3.)/2.*(3.**0.5), 24.**0.5*(x[2] + e*self.a/2.)/3.], c, d)
 
     def fcccellp(self, x, c, d):
         a = 2.**0.5
-        return self.potentialp([a*x[0]+(x[1]+x[2])/a, x[1]/a, x[2]/a], c, d)
+        return self.potentialp([(x[0]+x[1])/a, (x[0]+x[2])/a, (x[1]+x[2])/a], c, d)
 
 
 # main body of the program
@@ -153,22 +183,15 @@ a = System()
 esc = []; ebcc = []
 efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
 ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
-x = np.linspace(0.,(3./2.)**0.5*np.pi,100)
+x = np.linspace(0.,0.84,100) #1./2.**0.5/a.a*np.pi
 w = []
-for el in x:
-    print el
-    a.k = el*np.array([0.,0.,1.])
-    a.dynamicmatrix()
-    w.append(a.w)
-w = np.array(np.transpose(w))
-for el in w:
-    plt.plot(x,el**0.5)
-plt.show()
-x = np.linspace(1.03,1.12,20)
+
+x = np.linspace(1.0895,1.0905,5)
+dx = x[1]-x[0]
 a.n =14.
 for d in x:
     print( d )
-    a.a = d
+    a.a = d*a.sigma
     ef = 0.
     eh = 0.
     a.lattice("fcc", "lj")
@@ -208,6 +231,8 @@ for d in x:
     # ehcp.append(eh/1.)
     # print( ehcp[-1] )
 # plt.plot(x, esc, label='SC')
+d = (efcc_lj[0]-2.*efcc_lj[2]+efcc_lj[4])/(4.*(dx*a.sigma)**2)
+print (d*a.a)**0.5
 
 plt.plot(x, efcc_lj, label='FCC with LJ')
 # plt.plot(x, efcc_bfw, label='FCC with BFW')
