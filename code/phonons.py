@@ -100,7 +100,7 @@ a = System()
 esc = []; ebcc = []
 efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
 ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
-x = np.linspace(0.,2.**0.5/a.a*np.pi,100) 
+x = np.linspace(0.001,2.**0.5/a.a*np.pi,100) 
 dx = x[1]-x[0]
 w = []
 for el in x:
