@@ -44,6 +44,7 @@ class System():
                 a.append(self.energy)
             self.dm.append(a)
         self.w = np.sort(np.linalg.eigvals(self.dm))
+  
 
     def dynamicmatrixhcp(self):
         self.dm = []
@@ -52,22 +53,24 @@ class System():
         for l in np.linspace(0.,5.,6):
             c = np.array([0.,0.,0.])
             c[int(l%3.)]+=1.
+            t = l//3.
             a = []
             for m in np.linspace(0.,5.,6):
                 d = np.array([0.,0.,0.])
                 d[int(m%3.)]+=1.
+                s = m//3.
                 self.energy = 0.#self.hcpcell0(potentialType)
                 for i, j, k in itertools.product(r,r,r2):
                     x = self.a*np.array([i, j, k])
-                    if (l//3.)==(m//3.):
+                    if t==s:
                         if (i,j,k) != (0,0,0):              
                             self.energy += self.hcpcellp1(x, c, d, 0.)*(1.-self.phasek(self.hcpvector(x,0.)))
-                            if l//3.==1.:
-                                self.energy += self.hcpcellp1(x, c, d, -1.)
-                            else:
-                                self.energy += self.hcpcellp1(x, c, d, 1.)
-                    elif l//3.!=m//3.:
-                        e = m//3. - (l//3.)
+                        if t==0.:
+                            self.energy += self.hcpcellp1(x, c, d, 1.)
+                        else:
+                            self.energy += self.hcpcellp1(x, c, d, -1.)
+                    elif t!=s:
+                        e = s - t
                         self.energy += -self.hcpcellp1(x, c, d, e)*(self.phasek(self.hcpvector(x, e)))
                 #print self.energy
                 self.energy /= self.mass
@@ -77,6 +80,7 @@ class System():
         #print self.dm
         #print(np.shape(self.dm))
         self.w = np.sort(np.linalg.eigvals(np.transpose(self.dm)))
+        #print self.w
 
     def fccvector(self,x):
         a = 2.**0.5
