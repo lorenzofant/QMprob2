@@ -6,10 +6,10 @@ class System():
     def __init__(self):
         self.n = 2.
         # constants for LJ potential
-        self.epsilon = 99.55 #137.37 #
-        self.sigma = 3.758/(2.**(1./6.))
-        self.a = 1.0902*self.sigma #3.75
-        self.mass = 1.
+        self.epsilon = 0.0123426*1.60218e-19 #137.37 #
+        self.sigma = 3.34e-10
+        self.a = 3.64e-10 #3.75
+        self.mass = 39.948*1.66e-24
         
     
     def potentialp(self, x, i, j):
@@ -26,8 +26,8 @@ class System():
 
     def dynamicmatrix(self):
         self.dm = []
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
+        r = np.linspace(-self.n, self.n, int(2.*self.n+1))
+        r2 = np.linspace(-self.n/2., self.n/2., int(self.n+1))
         for l in range(3):
             c = np.array([0.,0.,0.])
             c[l]+=1.
@@ -125,12 +125,12 @@ for el in x:
     a.dynamicmatrixhcp()
     w.append(a.w)
 for el in x[:25]:
-    print el
+#     print el
     a.k = x[-1]*np.array([0.5+el/x[-1],1.-el/x[-1],0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
 for el in x[:100][::-1]:
-    print el
+#     print el
     a.k = el*np.array([.75,.75,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
@@ -151,3 +151,4 @@ plt.grid()
 plt.xlabel('k[$\AA^{-1}$]')
 plt.ylabel('Energy[meV]')
 plt.show()
+
