@@ -1,3 +1,4 @@
+from __future__ import print_function #for lorenzo print() function
 import matplotlib.pyplot as plt
 import numpy as np
 import itertools
@@ -5,11 +6,10 @@ import itertools
 class System():
     def __init__(self):
         self.n = 2.
-        # constants for LJ potential
-        self.epsilon = 0.0123426*1.60218e-19 #137.37 #
-        self.sigma = 3.34e-10
-        self.a = 3.64e-10 #3.75
-        self.mass = 39.948*1.66e-24
+        self.epsilon = 99.55 #137.37 #
+        self.sigma = 3.758/(2.**(1./6.))
+        self.a = 1.0902*self.sigma #3.75
+        self.mass = 1.
         
     
     def potentialp(self, x, i, j):
@@ -115,7 +115,7 @@ x = np.linspace(0.00,2.**0.5/a.a*np.pi,100)
 dx = x[1]-x[0]
 w = []
 for el in x:
-    print el
+    print (el)
     a.k = el*np.array([1.,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
@@ -144,9 +144,9 @@ y = np.array(np.linspace(0.,324.,325))*2.**0.5/a.a*np.pi/100.
 dx = y[3]-y[2]
 for el in w:
     plt.plot(x,el*1000.)
-    print np.real((el[2]-el[1])/dx*1000.)
-    print np.real(-(el[-51]-el[-52])/dx*1000.)
-    print np.real((el[-48]-el[-49])/dx*1000.)
+    print (np.real((el[2]-el[1])/dx*1000.))
+    print (np.real(-(el[-51]-el[-52])/dx*1000.))
+    print (np.real((el[-48]-el[-49])/dx*1000.))
 plt.grid()
 plt.xlabel('k[$\AA^{-1}$]')
 plt.ylabel('Energy[meV]')
