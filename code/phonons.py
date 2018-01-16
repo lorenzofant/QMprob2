@@ -111,39 +111,51 @@ a = System()
 esc = []; ebcc = []
 efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
 ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
-x = np.linspace(0.00,2.**0.5/a.a*np.pi,100) 
+x = np.linspace(0.00,1./a.a*np.pi,240) 
 dx = x[1]-x[0]
 w = []
 for el in x:
     print el
-    a.k = el*np.array([1.,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
+    a.k = el*np.array([4./3,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
-'''for el in x[:50]:
+for el in x[:80]:
     print el
-    a.k = x[-1]*np.array([el/x[-1],1.,0.])#np.array([0.5,-0.5,-0.5])
+    a.k = np.array([x[-1]*4./3.-el,-3.**0.5*el,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
-for el in x[:25]:
+for el in x[:180]:
     print el
-    a.k = x[-1]*np.array([0.5+el/x[-1],1.-el/x[-1],0.])#np.array([0.5,-0.5,-0.5])
+    a.k = np.array([x[-1]-4./3.*el,(-x[-1]+4./3.*el)/3.**0.5,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
-for el in x[:100][::-1]:
+for el in x[:120]:
     print el
-    a.k = el*np.array([.75,.75,0.])#np.array([0.5,-0.5,-0.5])
+    a.k = np.array([0.,0.,(3./2.)**0.5*el])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
-for el in x[:50]:
+print a.k
+for el in x:
     print el
-    a.k = el*np.array([1.,1.,1.])#np.array([0.5,-0.5,-0.5])
+    a.k = np.array([el,-el/3.**0.5,(3./2.)**0.5/2.*x[-1]])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
-    w.append(a.w)'''
+    w.append(a.w)
+for el in x[:80]:
+    print el
+    a.k = np.array([x[-1]+el,3.**0.5*el-x[-1]/3.**0.5,(3./2.)**0.5/2.*x[-1]])#np.array([0.5,-0.5,-0.5])
+    a.dynamicmatrixhcp()
+    w.append(a.w)
+for el in x:
+    print el
+    a.k = np.array([4./3.*(x[-1]-el),0.,(3./2.)**0.5/2.*(x[-1])])#np.array([0.5,-0.5,-0.5])
+    a.dynamicmatrixhcp()
+    w.append(a.w)
 w = np.array(np.transpose(w))**0.5*a.factor()
-y = np.array(np.linspace(0.,324.,325))*2.**0.5/a.a*np.pi/100.
+n = len(w[0])
+y = np.array(np.linspace(0.,n-1,n))/a.a*np.pi/240.
 dx = y[3]-y[2]
 for el in w:
-    plt.plot(x,el*1000.)
+    plt.plot(y,el*1000.)
     print np.real((el[2]-el[1])/dx*1000.)
     print np.real(-(el[-51]-el[-52])/dx*1000.)
     print np.real((el[-48]-el[-49])/dx*1000.)
