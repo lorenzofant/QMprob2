@@ -1,15 +1,18 @@
+
+from __future__ import print_function #for lorenzo print() function
 import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 
 class System():
     def __init__(self):
-        self.n = 3.
+        self.n = 2.
         # constants for LJ potential
-        self.epsilon = 99.55/100. #137.37 
-        self.sigma = 3.758/(2.**(1./6.))*10.**(-10.) 
+        self.epsilon = 99.55 #137.37 #
+        self.sigma = 3.758/(2.**(1./6.))
         self.a = 1.0902*self.sigma #3.75
-        self.mass = 1.#*10.**(-27)
+        self.mass = 1.
+
         # constants for BFW potential
         self.bfw_epsilon=142.1; self.bfw_sigma=3.76
         self.bfw_C6 = -1.10727; self.bfw_A0 = 0.27783; self.bfw_A3 = -25.2696
@@ -177,6 +180,9 @@ class System():
         a = 2.**0.5
         return self.potentialp([(x[0]+x[1])/a, (x[0]+x[2])/a, (x[1]+x[2])/a], c, d)
 
+    def factor(self):
+        return .001/(2.*np.pi*2**0.5)
+
 
 # main body of the program
 a = System()
@@ -232,8 +238,8 @@ for d in x:
     # print( ehcp[-1] )
 # plt.plot(x, esc, label='SC')
 d = (efcc_lj[0]-2.*efcc_lj[2]+efcc_lj[4])/(4.*(dx*a.sigma)**2)
-print (d*a.a**2/a.mass)**0.5
-print (d*a.a**3/a.mass)**0.5
+print ((d*a.a**2/a.mass)**0.5)
+# print ((d*a.a**3/a.mass)**0.5)
 
 plt.plot(x, efcc_lj, label='FCC with LJ')
 # plt.plot(x, efcc_bfw, label='FCC with BFW')

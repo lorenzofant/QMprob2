@@ -1,3 +1,4 @@
+from __future__ import print_function #for lorenzo print() function
 import matplotlib.pyplot as plt
 import numpy as np
 import itertools
@@ -5,7 +6,6 @@ import itertools
 class System():
     def __init__(self):
         self.n = 2.
-        # constants for LJ potential
         self.epsilon = 99.55 #137.37 #
         self.sigma = 3.758/(2.**(1./6.))
         self.a = 1.0902*self.sigma #3.75
@@ -26,8 +26,8 @@ class System():
 
     def dynamicmatrix(self):
         self.dm = []
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
+        r = np.linspace(-self.n, self.n, int(2.*self.n+1))
+        r2 = np.linspace(-self.n/2., self.n/2., int(self.n+1))
         for l in range(3):
             c = np.array([0.,0.,0.])
             c[l]+=1.
@@ -117,6 +117,8 @@ w = []
 for el in x:
     print el
     a.k = el*np.array([4./3,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
+    print (el)
+    a.k = el*np.array([1.,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
 for el in x[:80]:
@@ -132,6 +134,14 @@ for el in x[:180]:
 for el in x[:120]:
     print el
     a.k = np.array([0.,0.,(3./2.)**0.5*el])#np.array([0.5,-0.5,-0.5])
+for el in x[:25]:
+#     print el
+    a.k = x[-1]*np.array([0.5+el/x[-1],1.-el/x[-1],0.])#np.array([0.5,-0.5,-0.5])
+    a.dynamicmatrixhcp()
+    w.append(a.w)
+for el in x[:100][::-1]:
+#     print el
+    a.k = el*np.array([.75,.75,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
     w.append(a.w)
 print a.k
@@ -155,11 +165,12 @@ n = len(w[0])
 y = np.array(np.linspace(0.,n-1,n))/a.a*np.pi/240.
 dx = y[3]-y[2]
 for el in w:
-    plt.plot(y,el*1000.)
-    print np.real((el[2]-el[1])/dx*1000.)
-    print np.real(-(el[-51]-el[-52])/dx*1000.)
-    print np.real((el[-48]-el[-49])/dx*1000.)
+    plt.plot(x,el*1000.)
+    print (np.real((el[2]-el[1])/dx*1000.))
+    print (np.real(-(el[-51]-el[-52])/dx*1000.))
+    print (np.real((el[-48]-el[-49])/dx*1000.))
 plt.grid()
 plt.xlabel('k[$\AA^{-1}$]')
 plt.ylabel('Energy[meV]')
 plt.show()
+
