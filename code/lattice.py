@@ -64,60 +64,9 @@ class System():
         r = d/self.sigma
         return 4.*self.epsilon/(self.sigma**2)*(156.*pow(r, -14) - 42.*pow(r, -8))
 
-    def dynamicmatrix(self):
-        self.dm = []
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
-        for l in range(3):
-            c = np.array([0.,0.,0.])
-            c[l]+=1.
-            a = []
-            for m in range(3):
-                d = np.array([0.,0.,0.])
-                d[m]+=1.
-                self.energy = 0.#self.hcpcell0(potentialType)
-                for i, j, k in itertools.product(r,r,r):
-                    x = self.a*np.array([i, j, k])
-                    if (i,j,k) != (0,0,0): 
-                        self.energy += self.fcccellp(x, c, d)*(1.-self.phasek(x))
-                self.energy /= self.mass
-                a.append(self.energy)
-            self.dm.append(a)
-        self.w = np.sort(np.linalg.eigvals(self.dm))
 
-    def dynamicmatrixhcp(self):
-        self.dm = []
-        r = np.linspace(-self.n, self.n, 2.*self.n+1)
-        r2 = np.linspace(-self.n/2., self.n/2., self.n+1)
-        for l in range(6):
-            c = np.array([0.,0.,0.])
-            c[l%3]+=1.
-            a = []
-            for m in range(6):
-                d = np.array([0.,0.,0.])
-                d[m%3]+=1.
-                self.energy = 0.#self.hcpcell0(potentialType)
-                for i, j, k in itertools.product(r,r,r2):
-                    x = self.a*np.array([i, j, k])
-                    if l//3==m//3:
-                        if (i,j,k) != (0,0,0):              
-                             self.energy += self.hcpcellp1(x, c, d, 0.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
-                    else:             
-                        self.energy += self.hcpcellp1(x, c, d, -l//3.+m//3.)*(2.*(1.-l//3.)*(1.-m//3.)+2.*l//3.*m//3.-self.phasek(x))
-                self.energy /= self.mass
-                a.append(self.energy)
-            self.dm.append(a)
-        print(np.shape(self.dm))
-        self.w = np.sort(np.linalg.eigvals(self.dm))
-
-
-    def phasek(self, x):
-        return np.e**(-1.j*np.dot(self.k,x))#np.cos(np.dot(self.k,x))
-
-    def distance(self, x, y, z):
-        d = (x**2 + y**2 + z**2)**0.5
-        if d < self.a*1.1:
-            self.closen += 1
+    def distance(self, x):
+        d = np.linalg.norm(x)
         return d
 
     def lattice(self, latticeType, potentialType):
@@ -129,9 +78,11 @@ class System():
             for i, j, k in itertools.product(r,r,r):
                 if (i,j,k) != (0,0,0): self.energy += self.sccell(self.a*i, self.a*j, self.a*k, potentialType)
         if latticeType == "fcc":
+            self.matrice = np.array([[1.,1.,0.],[1.,0.,1.],[0.,1.,1.]])/2.**0.5
             self.energy = self.fcccell0(potentialType)
             for i, j, k in itertools.product(r,r,r):
-                if (i, j, k) != (0, 0, 0): self.energy += self.fcccell(self.a*i, self.a*j, self.a*k, potentialType)
+                self.x = np.array([self.a*i, self.a*j, self.a*k])
+                if (i, j, k) != (0, 0, 0): self.energy += self.fcccell(potentialType)
         if latticeType == "bcc":
             self.energy = self.bcccell0(potentialType)
             for i, j, k in itertools.product(r,r,r):
@@ -145,9 +96,10 @@ class System():
         a=1.0
         return self.potential(self.distance(a*x, a*y, a*z), potentialType)
 
-    def fcccell(self, x, y, z, potentialType):
+    def fcccell(self, potentialType):
         a = 2.**0.5
-        return self.potential(self.distance(a*x+(y+z)/a, y/a, z/a), potentialType)
+        #print(self.distance(np.dot(self.matrice,np.dot(self.epsilon,self.x))))
+        return self.potential(self.distance(np.dot(self.epsilonmat,np.dot(self.matrice,self.x))),potentialType)
 
     def bcccell(self, x, y, z, potentialType):
         a = 1./(3.**0.5)
@@ -178,10 +130,21 @@ class System():
 
     def fcccellp(self, x, c, d):
         a = 2.**0.5
-        return self.potentialp([(x[0]+x[1])/a, (x[0]+x[2])/a, (x[1]+x[2])/a], c, d)
+        self.matrice = np.array([[1.,1.,0.],[1.,0.,1.],[0.,1.,1.]])/a
+        return self.potentialp(np.dot(self.matrice,np.dot(self.epsilon,x)), c, d)
+
+    def transformation(self):
+        #self.delta*=1./3.**0.5
+        #self.delta*=1./2.**0.5
+        self.epsilonmat = np.array([[1.,self.delta,self.delta],[self.delta,1.,self.delta],[self.delta,self.delta,1.]])
+        #self.epsilonmat = np.array([[1.+self.delta,0.,0.],[0.,1.+self.delta,0.],[0.,0.,1.+self.delta]])
+        self.epsilonmat = np.array([[1.+self.delta,0.,0.],[0.,1.-self.delta,0.],[0.,0.,1.]])
 
     def factor(self):
         return .001/(2.*np.pi*2**0.5)
+
+    def factorenergy(self):
+        return 2.*10.**(-23)
 
 
 # main body of the program
@@ -192,18 +155,20 @@ ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
 x = np.linspace(0.,0.84,100) #1./2.**0.5/a.a*np.pi
 w = []
 
-x = np.linspace(1.0899,1.0905,20)
+x = np.linspace(-0.0001,0.0001,20)
 dx = x[1]-x[0]
 a.n =14.
 for d in x:
     print( d )
-    a.a = d*a.sigma
+    a.delta = d
+    a.transformation()
     ef = 0.
     eh = 0.
     a.lattice("fcc", "lj")
+    print(a.energy)
     efcc_lj.append(a.energy)
-    a.lattice("hcp", "lj")
-    ehcp_lj.append(a.energy)
+    #a.lattice("hcp", "lj")
+    #ehcp_lj.append(a.energy)
 
     # a.lattice("fcc", "bfw")
     # efcc_bfw.append(a.energy)
@@ -237,8 +202,10 @@ for d in x:
     # ehcp.append(eh/1.)
     # print( ehcp[-1] )
 # plt.plot(x, esc, label='SC')
-d = (efcc_lj[0]-2.*efcc_lj[2]+efcc_lj[4])/(4.*(dx*a.sigma)**2)
-print ((d*a.a**2/a.mass)**0.5)
+efcc_lj = np.array(efcc_lj)*a.factorenergy()
+d = (efcc_lj[0]-2.*efcc_lj[2]+efcc_lj[4])/(4.*(dx*a.a)**2)/10.**-30/a.a
+print(d)
+#print ((d*a.a**2/a.mass)**0.5)
 # print ((d*a.a**3/a.mass)**0.5)
 
 plt.plot(x, efcc_lj, label='FCC with LJ')
@@ -256,7 +223,7 @@ plt.plot(x, efcc_lj, label='FCC with LJ')
 plt.grid()
 plt.legend()
 plt.xlabel('Lattice spacing [$\sigma$]')
-plt.ylabel('Energy [$\epsilon$]')
+plt.ylabel('Energy []')
 plt.show()
 # np.savetxt('energie6', [x, efcc, ehcp])
 # print("LJ, fcc min = ", min(efcc_lj), ":: hcp min = ", min(ehcp_lj), ":: difference factor ",1-(min(efcc_lj)/min(ehcp_lj)))

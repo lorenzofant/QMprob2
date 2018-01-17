@@ -5,7 +5,7 @@ import itertools
 
 class System():
     def __init__(self):
-        self.n = 2.
+        self.n = 6.
         self.epsilon = 99.55 #137.37 #
         self.sigma = 3.758/(2.**(1./6.))
         self.a = 1.0902*self.sigma #3.75
@@ -111,17 +111,15 @@ a = System()
 esc = []; ebcc = []
 efcc_lj = []; efcc_bfw = []; efcc_hfd = []; efcc_bbms = []
 ehcp_lj = []; ehcp_bfw = []; ehcp_hfd = []; ehcp_bbms = []
-x = np.linspace(0.00,1./a.a*np.pi,240) 
+x = np.linspace(0.00,.1/a.a*np.pi,20) 
 dx = x[1]-x[0]
 w = []
 for el in x:
-    print el
-    a.k = el*np.array([4./3,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
     print (el)
-    a.k = el*np.array([1.,0.,0.])#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
-    a.dynamicmatrixhcp()
+    a.k = el*np.array([1.,1.,0.])/2.**0.5#[(3./2.)**0.5,1./2.,0.])#np.array([0.5,-0.5,-0.5])
+    a.dynamicmatrix()
     w.append(a.w)
-for el in x[:80]:
+'''for el in x[:80]:
     print el
     a.k = np.array([x[-1]*4./3.-el,-3.**0.5*el,0.])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
@@ -159,16 +157,16 @@ for el in x:
     print el
     a.k = np.array([4./3.*(x[-1]-el),0.,(3./2.)**0.5/2.*(x[-1])])#np.array([0.5,-0.5,-0.5])
     a.dynamicmatrixhcp()
-    w.append(a.w)
+    w.append(a.w)'''
 w = np.array(np.transpose(w))**0.5*a.factor()
 n = len(w[0])
-y = np.array(np.linspace(0.,n-1,n))/a.a*np.pi/240.
+y = np.array(np.linspace(0.,n-1,n))/a.a*np.pi/200.
 dx = y[3]-y[2]
 for el in w:
     plt.plot(x,el*1000.)
-    print (np.real((el[2]-el[1])/dx*1000.))
-    print (np.real(-(el[-51]-el[-52])/dx*1000.))
-    print (np.real((el[-48]-el[-49])/dx*1000.))
+    print (np.real((el[2]-el[1])/dx/(6.5e-6)))
+    #print (np.real(-(el[-51]-el[-52])/dx*1000.))
+    #print (np.real((el[-48]-el[-49])/dx*1000.))
 plt.grid()
 plt.xlabel('k[$\AA^{-1}$]')
 plt.ylabel('Energy[meV]')
