@@ -22,7 +22,8 @@
 
 
 \section{A. Solid Argon With LJ Potential}
-
+NOTE: The code and related documents are available in the GitHub repo created for this project \\
+https://github.com/lorenzofant/QMprob2
 \subsection{Lattice Parameters}
 From the general expression of the Lennard-Jones potential
 \begin{equation}
@@ -41,7 +42,7 @@ From these two expressions we can deduce $\sigma = \frac{3.758}{2^{\frac{1}{6}}}
 Knowing the expression for the Lennard-Jones potential we can derive an approximate value of the energy of different lattice structures by numerically summing the potential energy contributions of the neighbours.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=9cm]{lj.png}
+    \includegraphics[width=12cm]{lj.png}
     \caption{\it \label{en(spacing)}Energy of the atoms in the lattice as a function of the lattice spacing for four possible lattices: Simple Cubic (Blue), Face Centered (Green), Body Centered (Red), hexagonal Cenered (Light blue)}
 \end{figure}
     
@@ -62,17 +63,17 @@ We looked at the behavior of the energy as a function of the amplitude of the no
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=9cm]{energy_noise.png}
+    \includegraphics[width=12cm]{energy_noise.png}
     \caption{\it \label{noise}Energy of the minima obtained above for FCC and HCP lattices as a function of the amplitude of a random noise displacing the atoms positions}
 \end{figure}
 
 We can see that there is no crossing between the two energies and thus it the fact that the "fcc" structure is prefererred in nature cannot be explained in this way.
-The next step would be to simulate different potential models such as Barker-Fisher-Watts (BFW) potential\ref{bfw} and Aziz-Chen (Hartree-Fock, HFD-C) potentials\ref{hfd}
+The next step would be to simulate different potential models such as Barker-Fisher-Watts (BFW) potential\cite{bfw} and Aziz-Chen (Hartree-Fock, HFD-C) potentials\cite{hfd}
  to see whether they find any results different than the one obtained using L-J potential. Even though BFW finds a new minima for the energy the HPC structure still have the minimum among
- the crystal structures. as shown in the figure \ref{diff-pot}
+ the crystal structures. An imporved version of this BFW known as Barker-Bobetic-Maitland-Smith (BBMS) potential\cite{bbms} which best describes Argon behaviour can be found in the literature. as shown in the figure \ref{diff-pot}
  \begin{figure}[h]\label{diff-pot}
     \centering
-    \includegraphics[width=9cm]{diff_pot.png}
+    \includegraphics[width=12cm]{diff_pot.png}
     \caption{\it \label{diff-pot}Energy of the atoms in the lattice as a function of the lattice spacing for four possible lattices: Face Centered , hexagonal Centered for BFW and HFD potentials }
 \end{figure}
 \subsection{Spectrum of the HCP}
@@ -187,7 +188,12 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \begin{equation}
         D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(2\delta_{gf}-e^{i\underline{q}\underline{r}_{ij}}\right)
     \end{equation}
-    The diagonalization of the former thus brings to the dispersion realtion of the phonons.
+    The diagonalization of the former thus brings to the dispersion relation of the phonons. The calculated phonon dispersion is given in the figure \ref{phonon-hcp}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=12cm]{phonon_hcp.png}
+        \caption{\it \label{phonon-hcp}Phon dispersion of HCP structure}
+    \end{figure}
 
     \subsection{Spectrum of the FCC}
 
@@ -282,8 +288,12 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
         \begin{equation}
             D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(1-e^{i\underline{q}\underline{r}_{ij}}\right)
         \end{equation}
-        The diagonalization of the former thus brings to the dispersion realtion of the phonons.
-    
+        The diagonalization of the former thus brings to the dispersion realtion of the phonons. The calculated phonon dispersion is given in the figure \ref{phonon-fcc}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{phonon_fcc.png}
+    \caption{\it \label{phonon-fcc}Phon dispersion of FCC structure}
+\end{figure}
 %\bibliographystyle{alpha}
 %\bibliography{sample}
 
