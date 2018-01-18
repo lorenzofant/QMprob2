@@ -43,10 +43,10 @@ Knowing the expression for the Lennard-Jones potential we can derive an approxim
 \begin{figure}[h]
     \centering
     \includegraphics[width=12cm]{lj.png}
-    \caption{\it \label{en(spacing)}Energy of the atoms in the lattice as a function of the lattice spacing for four possible lattices: Simple Cubic (Blue), Face Centered (Green), Body Centered (Red), hexagonal Cenered (Light blue)}
+    \caption{\it \label{en(spacing)}Energy of the atoms in the lattice as a function of the lattice spacing for four possible lattices: Simple Cubic (Blue), Face Centered (Green), Body Centered (Red), hexagonal Centered (Light blue)}
 \end{figure}
     
-Doing so for the $14^3$ closest neighbors, we found the following values for the required structures
+Doing so for the $14^3$ closest neighbours, we found the following values for the required structures
 \begin{eqnarray*}
 &spacing&energy\\
 sc&1.066\sigma&-11.36\epsilon\\
@@ -54,12 +54,12 @@ bcc&1.069\sigma&-16.45\epsilon\\
 fcc&1.090\sigma&-17.2160\epsilon\\
 hcp&1.090\sigma&-17.2192\epsilon
 \end{eqnarray*}
-We thus found that the energetically favorable configuration is the $hcp$ one by a factor of $0.01\%$ with respect to the $fcc$.
+We thus found that the energetically favourable configuration is the $hcp$ one by a factor of $0.01\%$ with respect to the $fcc$.
 This is in agreement with results found in the literature ref{crystal}. 
 In the same reference it is also pointed out that despite $hcp$ configuration being lower in energy, the one that more easily appears in nature is the $fcc$ one.
 We here try to justify such a result without considering, as done in \ref{crystal}, impurities.\\
-We tried instead to consider the behavior of the energy in the minimum when some random noise is present in the lattice, displacing the positions of the atoms.
-We looked at the behavior of the energy as a function of the amplitude of the noise averaging over $10^4$ different realizations of the system with a Gaussian random displacement of amplitude $d$.
+We tried instead to consider the behaviour of the energy in the minimum when some random noise is present in the lattice, displacing the positions of the atoms.
+We looked at the behaviour of the energy as a function of the amplitude of the noise averaging over $10^4$ different realisations of the system with a Gaussian random displacement of amplitude $d$.
 
 \begin{figure}[ht]
     \centering
@@ -67,10 +67,10 @@ We looked at the behavior of the energy as a function of the amplitude of the no
     \caption{\it \label{noise}Energy of the minima obtained above for FCC and HCP lattices as a function of the amplitude of a random noise displacing the atoms positions}
 \end{figure}
 
-We can see that there is no crossing between the two energies and thus it the fact that the "fcc" structure is prefererred in nature cannot be explained in this way.
+We can see that there is no crossing between the two energies and thus it the fact that the FCC structure is preferred in nature cannot be explained in this way.
 The next step would be to simulate different potential models such as Barker-Fisher-Watts (BFW) potential\cite{bfw} and Aziz-Chen (Hartree-Fock, HFD-C) potentials\cite{hfd}
  to see whether they find any results different than the one obtained using L-J potential. Even though BFW finds a new minima for the energy the HPC structure still have the minimum among
- the crystal structures. An imporved version of this BFW known as Barker-Bobetic-Maitland-Smith (BBMS) potential\cite{bbms} which best describes Argon behaviour can be found in the literature. as shown in the figure \ref{diff-pot}
+ the crystal structures. An improved version of this BFW known as Barker-Bobetic-Maitland-Smith (BBMS) potential\cite{bbms} which best describes Argon behaviour can be found in the literature. as shown in the figure \ref{diff-pot}
  \begin{figure}[h]\label{diff-pot}
     \centering
     \includegraphics[width=12cm]{diff_pot.png}
@@ -78,7 +78,7 @@ The next step would be to simulate different potential models such as Barker-Fis
 \end{figure}
 \subsection{Spectrum of the HCP}
 
-In the case of the hcp configuration we find a structure where we have two atoms per unit cell.
+In the case of the HCP configuration we find a structure where we have two atoms per unit cell.
 The cell can be easily identified through the three vectors of coordinates\\
 \begin{minipage}{0.3\textwidth}
 \centering
@@ -175,7 +175,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
         \omega^2 u_{i,\alpha, g} = \sum_{m,\beta} \frac{1}{M}\frac{\partial^2 V(r)}{\partial r_{i,\alpha, g}\partial r_{m,\beta,f}}e^{i\underline{q}\underline{r}_{im}}u_{m,\beta, f}
     \end{equation}
     where the approximation on the solution $s_{i,\alpha}=e^{i(\underline{q}\underline{r}_i - \omega)}u_{\alpha}$ was applied assuming the harmonic nature of the system.
-    The indeces $\alpha,\beta$ can assume values between $x,y,z$, the indeces $i,m$ along the cells in the lattice and $g,f$ along the atoms inside the unit cell.
+    The indices $\alpha,\beta$ can assume values between $x,y,z$, the indices $i,m$ along the cells in the lattice and $g,f$ along the atoms inside the unit cell.
     We can now define 
     \begin{equation}
         \Phi_{\alpha\beta}^{imgf}(r):=\frac{\partial^2 V(r)}{\partial r_{i,\alpha,g}\partial r_{m,\beta,f}}
@@ -197,7 +197,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
 
     \subsection{Spectrum of the FCC}
 
-    In the case of the fcc configuration the cell contains only one atom and can be identified through the three vectors of coordinates\\
+    In the case of the FCC configuration the cell contains only one atom and can be identified through the three vectors of coordinates\\
     \begin{minipage}{0.3\textwidth}
     \centering
     \begin{equation*}
@@ -288,7 +288,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
         \begin{equation}
             D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(1-e^{i\underline{q}\underline{r}_{ij}}\right)
         \end{equation}
-        The diagonalization of the former thus brings to the dispersion realtion of the phonons. The calculated phonon dispersion is given in the figure \ref{phonon-fcc}
+        The diagonalization of the former thus brings to the dispersion relation of the phonons. The calculated phonon dispersion is given in the figure \ref{phonon-fcc}
 \begin{figure}[h]
     \centering
     \includegraphics[width=12cm]{phonon_fcc.png}
