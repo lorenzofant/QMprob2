@@ -11,16 +11,14 @@
 %% Useful packages
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%\usepackage[colorinlistoftodos]{todonotes}
+%\usepackage[colorlinks=true]{hyperref}
 \usepackage{braket}
 \title{QM Problems}
 \author{Anoop Chandran -- Lorenzo Fant}
 
 \begin{document}
 \maketitle
-
-
 \section{A. Solid Argon With LJ Potential}
 NOTE: The code and related documents are available in the GitHub repo created for this project \\
 https://github.com/lorenzofant/QMprob2
@@ -172,7 +170,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
         
     To evaluate the spectrum of the phonon dispersion one can evaluate, in the harmonic approximation, the equation 
     \begin{equation}
-        \omega^2 u_{i,\alpha, g} = \sum_{m,\beta} \frac{1}{M}\frac{\partial^2 V(r)}{\partial r_{i,\alpha, g}\partial r_{m,\beta,f}}e^{i\underline{q}\underline{r}_{im}}u_{m,\beta, f}
+        \omega^2 u_{i,\alpha, g} = \sum_{m,\beta,f} \frac{1}{M}\frac{\partial^2 V(r)}{\partial r_{i,\alpha, g}\partial r_{m,\beta,f}}e^{i\underline{q}\underline{r}_{im}}u_{m,\beta, f}
     \end{equation}
     where the approximation on the solution $s_{i,\alpha}=e^{i(\underline{q}\underline{r}_i - \omega)}u_{\alpha}$ was applied assuming the harmonic nature of the system.
     The indices $\alpha,\beta$ can assume values between $x,y,z$, the indices $i,m$ along the cells in the lattice and $g,f$ along the atoms inside the unit cell.
@@ -186,7 +184,7 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \end{equation*}
     and from here the dynamical matrix
     \begin{equation}
-        D_{\alpha\beta} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(2\delta_{gf}-e^{i\underline{q}\underline{r}_{ij}}\right)
+        D_{\alpha\beta}^{g,f} = \frac{1}{M}\sum_j\left[\frac{\partial^2 v(r_{ij})}{\partial r_{ij}^2}\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^2} + \frac{\partial v(r_{ij})}{\partial r_{ij}}\left(\frac{\delta_{\alpha\beta}}{r_ij}-\frac{(r_{ij})_{\alpha}(r_{ij})_{\beta}}{r_{ij}^3}\right)\right]\left(\delta_{gf}(1-e^{i\underline{q}\underline{r}_{ij}}) \bar{\delta}_{f,g}e^{i\underline{q}\underline{r}}\right)
     \end{equation}
     The diagonalization of the former thus brings to the dispersion relation of the phonons. The calculated phonon dispersion is given in the figure \ref{phonon-hcp}
     \begin{figure}[h]
