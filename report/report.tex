@@ -234,8 +234,6 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
     \end{equation*}
     \end{minipage}
     
-    
-    
     and that of the corresponding reciprocal lattice vectors can be constructed from those above and their coordinates are \\
     \begin{minipage}{0.3\textwidth}
         \centering
@@ -297,5 +295,55 @@ and that of the corresponding reciprocal lattice vectors can be constructed from
 %\bibliographystyle{alpha}
 %\bibliography{sample}
 \section{Calculation of Elastic Constants}
+The elastic stiffness tensor is defined in the limit of small de- formations. In this regime, there is a linear relationship between the deformation and the stress, as expressed by the generalised Hooke’s law:
+\begin{equation}
+    \sigma_{\alpha\beta} = C_{\alpha\beta\mu\nu} \epsilon_{\mu\nu}
+\end{equation}
+where the implicit sum convention is used and where $\alpha$, $\beta$, $\mu$, $\nu$ represent the Cartesian coordinates, $\epsilon$ is the strain tensor, $\sigma$ is the stress tensor and $C$ is the stiffness tensor, a fourth-rank tensor. The strain tensor elements give the change in an element of length when the body is deformed. For small deformations, strain tensor elements are equal to
+\begin{equation}
+    \epsilon_{\alpha\beta}=\frac{1}{2}\left(\frac{\delta d_{\alpha}}{\delta r_{\beta}^0}+\frac{\delta d_{\beta}}{\delta r_{\alpha}^0}\right)
+\end{equation}
+where $d = r−r0$ is the displacement of point $r$ from its reference state $r0$
+It can be easily shown that $\epsilon$ and $\sigma$ are symmetric tensors. The Voigt notation is commonly used to represent symmetric tensors by reducing their order and simplify notations. Pairs of indices $\alpha, \beta$ are written as singlets, with xx = 1, yy = 2, zz = 3, yz = 4, xz = 5 and xy = 6. Using this representation, $\epsilon$ and $\sigma$ can be written as vectors with six components and C as a 6 by 6 matrix. The generalised Hooke’s law is then written:
+\begin{equation}
+    \sigma_i = C_{ij}\epsilon_j
+\end{equation}
+using implicit sum convention with j = 1 to 6 and $\epsilon_4 = 2\epsilon_{yz} , \epsilon_5 = 2\epsilon_{xz} and \epsilon_6 = 2\epsilon_{xy}$
+\subsection{Numerical calculation of Elastic Constants}
+\textbf{From Sound Velocities}\\
 
+Using the phonon dispersion of the FCC Argon, one is able to find the elastic constants using the following equations:
+\\
+velocity $\omega/k$ of a longitudinal wave in the [100] direction is   $v_s = (C_{11}/\rho)^{1/2}$ 
+\\
+velocity $\omega/k$ of a transverse wave in the [100] direction is   $v_s = (C_{44}/\rho)^{1/2}$ 
+\\
+velocity $\omega/k$ of a longitudinal wave in the [110] direction is   $v_s = ((C_{11}+C_{12}+2C_{44})/\rho)^{1/2}$ 
+
+The calculated values are then compared with values from literature 
+\begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+      Sound Speed [m/s] & Elastic Constants[GPa]  & Litterature values \\ 
+     \hline
+     $V_{s1} = 1786$ & $C_{11} = 3.2$  &$C_{11} = 2.3$ \\ 
+     $V_{s2} = 1350$& $C_{44} = 1.8$ & $C_{44} = 1.5$ \\ 
+     $V_{s3} = 2081$& $C_{12} = 1.8$ & $C_{12} = 1.2$ \\ 
+     \hline
+    \end{tabular}
+\end{center}
+\textbf{From the Second derivative}\\
+Calculation of elastic constants are carried out again using the application of an appropriate strain on the lattice and calculating the optimised energy and taking the second derivative of the same. The values are tabulated in the table below.
+
+\begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    Stress/strain [GPa] & From sound speed [GPa]  & Litterature values \\ 
+     \hline
+     $C_{11} = 2.6$ & $C_{11} = 3.2$  &$C_{11} = 2.3$ \\ 
+     $C_{44} = 1.5$& $C_{44} = 1.8$ & $C_{44} = 1.5$ \\ 
+     $C_{12} = 1.1$& $C_{12} = 1.8$ & $C_{12} = 1.2$ \\
+     \hline 
+    \end{tabular}
+\end{center}
 \end{document}
